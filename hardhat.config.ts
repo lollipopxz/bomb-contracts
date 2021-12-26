@@ -17,23 +17,26 @@ import './tasks';
 
 import {HardhatUserConfig} from 'hardhat/types';
 import {removeConsoleLog} from 'hardhat-preprocessor';
+require('hardhat-abi-exporter');
 
 const accounts = {
-    mnemonic: process.env.MNEMONIC || 'test test test test test test test test test test test junk',
+    mnemonic: process.env.MNEMONIC || 'test test test test test test test test test test bank junk',
     // accountsBalance: "990000000000000000000",
 };
 
 const config: HardhatUserConfig = {
     abiExporter: {
         path: './abi',
-        clear: false,
+        clear: true,
         flat: true,
+        runOnCompile: true,
         // only: [],
         // except: []
     },
     defaultNetwork: 'hardhat',
     etherscan: {
-        apiKey: process.env.ETHERSCAN_API_KEY,
+        apiKey: "RK3V9DS7NQ9D17XIPHB6GGJ6CVYSTXAYWP",
+        // process.env.ETHERSCAN_API_KEY,
     },
     gasReporter: {
         coinmarketcap: process.env.COINMARKETCAP_API_KEY,
@@ -50,9 +53,9 @@ const config: HardhatUserConfig = {
         },
         dev: {
             // Default to 1
-            default: '0x0D8e060CA2D847553ec14394ee6B304623E0d1d6',
+            default: '0xa76e17f249ba5fde5aa8a49249f77e4fc38dbd37',
             // dev address mainnet
-            // 1: "0x0D8e060CA2D847553ec14394ee6B304623E0d1d6",
+            // 1: "0xa76e17f249ba5fde5aa8a49249f77e4fc38dbd37",
         },
     },
     networks: {
