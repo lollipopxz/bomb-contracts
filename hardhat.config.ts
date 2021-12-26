@@ -35,8 +35,7 @@ const config: HardhatUserConfig = {
     },
     defaultNetwork: 'hardhat',
     etherscan: {
-        apiKey: "RK3V9DS7NQ9D17XIPHB6GGJ6CVYSTXAYWP",
-        // process.env.ETHERSCAN_API_KEY,
+        apiKey: process.env.POLYGON_TESTNET_API_KEY,
     },
     gasReporter: {
         coinmarketcap: process.env.COINMARKETCAP_API_KEY,
