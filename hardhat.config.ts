@@ -17,7 +17,7 @@ import './tasks';
 
 import {HardhatUserConfig} from 'hardhat/types';
 import {removeConsoleLog} from 'hardhat-preprocessor';
-require('hardhat-abi-exporter');
+
 
 const accounts = {
     mnemonic: process.env.MNEMONIC || 'test test test test test test test test test test bank junk',

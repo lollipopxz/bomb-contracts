@@ -6,6 +6,7 @@ module.exports = async function ({
     const { deploy } = deployments;
 
     const { deployer, dev } = await getNamedAccounts();
+    console.log(dev)
     await deploy("JBond", {
        
         from: deployer,
