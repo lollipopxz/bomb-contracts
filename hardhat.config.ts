@@ -18,7 +18,6 @@ import './tasks';
 import {HardhatUserConfig} from 'hardhat/types';
 import {removeConsoleLog} from 'hardhat-preprocessor';
 
-
 const accounts = {
     mnemonic: process.env.MNEMONIC || 'test test test test test test test test test test bank junk',
     // accountsBalance: "990000000000000000000",
@@ -35,7 +34,9 @@ const config: HardhatUserConfig = {
     },
     defaultNetwork: 'hardhat',
     etherscan: {
-        apiKey: process.env.POLYGON_TESTNET_API_KEY,
+        apiKey:
+            // process.env.POLYGON_TESTNET_API_KEY // mumbai
+            process.env.BSC_TESTNET_API_KEY, // bsc testnet
     },
     gasReporter: {
         coinmarketcap: process.env.COINMARKETCAP_API_KEY,
@@ -52,9 +53,12 @@ const config: HardhatUserConfig = {
         },
         dev: {
             // Default to 1
-            default: '0xa76e17f249ba5fde5aa8a49249f77e4fc38dbd37',
+            default: 1,
             // dev address mainnet
             // 1: "0xa76e17f249ba5fde5aa8a49249f77e4fc38dbd37",
+        },
+        community_fund: {
+            default: 2,
         },
     },
     networks: {
@@ -275,6 +279,7 @@ const config: HardhatUserConfig = {
             gasMultiplier: 2,
         },
     },
+    
     paths: {
         artifacts: 'artifacts',
         cache: 'cache',

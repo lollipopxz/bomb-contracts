@@ -6,6 +6,8 @@ module.exports = async function ({
     const { deploy } = deployments;
 
     const { deployer, dev } = await getNamedAccounts();
+    
+    //must change in contract
 
     //  const bomb = await ethers.getContract("Bomb");
     //  testnet
@@ -26,4 +28,4 @@ module.exports = async function ({
     });
 };
 
-module.exports.tags = ["TaxOfficeV2"];
+module.exports.tags = ["TaxOfficeV2", "Step2"];

@@ -21,7 +21,7 @@ $$$$$$$  | $$$$$$  |$$ | \_/ $$ |$$$$$$$  |$$\ $$ | $$ | $$ |\$$$$$$  |$$ |  $$ 
                                                                                            \$$$$$$  |
     http://bomb.money                                                                      \______/ 
 */
-contract BShare is ERC20Burnable, Operator {
+contract JShare is ERC20Burnable, Operator {
     using SafeMath for uint256;
 
     // TOTAL MAX SUPPLY = 70,000 tSHAREs
@@ -44,7 +44,7 @@ contract BShare is ERC20Burnable, Operator {
 
     bool public rewardPoolDistributed = false;
 
-    constructor(uint256 _startTime, address _communityFund, address _devFund) public ERC20("BSHARE", "BSHARE") {
+    constructor(uint256 _startTime, address _communityFund, address _devFund) public ERC20("JSHARE", "JSHARE") {
         _mint(msg.sender, 1 ether); // mint 1 BOMB Share for initial pools deployment
 
         startTime = _startTime;

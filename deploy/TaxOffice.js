@@ -7,11 +7,11 @@ module.exports = async function ({
 
     const { deployer, dev } = await getNamedAccounts();
 
-    //  const bomb = await ethers.getContract("Bomb");
+    const Jira = await ethers.getContract("Jira");
     //  testnet
     //const btcAddress = "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca";
     // mainnet
-    const bombAddress = "0x522348779DCb2911539e76A1042aA922F9C47Ee3"
+    //const bombAddress = "0x522348779DCb2911539e76A1042aA922F9C47Ee3"
 
     //testnet 
     //const pairAddress = "0x742957Dd7b4D4bB7177CF63B61Fd5f0f050Ebaa4";
@@ -20,10 +20,10 @@ module.exports = async function ({
 
     await deploy("TaxOffice", {
         from: deployer,
-        args: [bombAddress],
+        args: [Jira],
         log: true,
         deterministicDeployment: false,
     });
 };
 
-module.exports.tags = ["TaxOffice"];
+module.exports.tags = ["TaxOffice","Step2"];

@@ -21,16 +21,16 @@ $$$$$$$  | $$$$$$  |$$ | \_/ $$ |$$$$$$$  |$$\ $$ | $$ | $$ |\$$$$$$  |$$ |  $$ 
 \_______/  \______/ \__|     \__|\_______/ \__|\__| \__| \__| \______/ \__|  \__| \_______| \____$$ |
                                                                                            $$\   $$ |
                                                                                            \$$$$$$  |
-    http://bomb.money                                                                      \______/ 
+    http://jira.money                                                                      \______/ 
 */
-contract Bomb is ERC20Burnable, Operator {
+contract Jira is ERC20Burnable, Operator {
     using SafeMath8 for uint8;
     using SafeMath for uint256;
 
     // Initial distribution for the first 24h genesis pools
     uint256 public constant INITIAL_GENESIS_POOL_DISTRIBUTION = 11000 ether;
-    // Initial distribution for the day 2-5 BOMB-WETH LP -> BOMB pool
-    uint256 public constant INITIAL_BOMB_POOL_DISTRIBUTION = 140000 ether;
+    // Initial distribution for the day 2-5 JIRA-WETH LP -> JIRA pool
+    uint256 public constant INITIAL_JIRA_POOL_DISTRIBUTION = 140000 ether;
     // Distribution for airdrops wallet
     uint256 public constant INITIAL_AIRDROP_WALLET_DISTRIBUTION = 9000 ether;
 
@@ -39,7 +39,7 @@ contract Bomb is ERC20Burnable, Operator {
 
     /* ================= Taxation =============== */
     // Address of the Oracle
-    address public bombOracle;
+    address public jiraOracle;
     // Address of the Tax Office
     address public taxOffice;
 
@@ -73,10 +73,10 @@ contract Bomb is ERC20Burnable, Operator {
     }
 
     /**
-     * @notice Constructs the BOMB ERC-20 contract.
+     * @notice Constructs the JIRA ERC-20 contract.
      */
-    constructor(uint256 _taxRate, address _taxCollectorAddress) public ERC20("bomb.money", "BOMB") {
-        // Mints 1 BOMB to contract creator for initial pool setup
+    constructor(uint256 _taxRate, address _taxCollectorAddress) public ERC20("jira.money", "JIRA") {
+        // Mints 1 JIRA to contract creator for initial pool setup
         require(_taxRate < 10000, "tax equal or bigger to 100%");
         require(_taxCollectorAddress != address(0), "tax collector address must be non-zero address");
 
@@ -125,18 +125,18 @@ contract Bomb is ERC20Burnable, Operator {
         burnThreshold = _burnThreshold;
     }
 
-    function _getBombPrice() internal view returns (uint256 _bombPrice) {
-        try IOracle(bombOracle).consult(address(this), 1e18) returns (uint144 _price) {
+    function _getJiraPrice() internal view returns (uint256 _jiraPrice) {
+        try IOracle(jiraOracle).consult(address(this), 1e18) returns (uint144 _price) {
             return uint256(_price);
         } catch {
-            revert("Bomb: failed to fetch BOMB price from Oracle");
+            revert("Jira: failed to fetch JIRA price from Oracle");
         }
     }
 
-    function _updateTaxRate(uint256 _bombPrice) internal returns (uint256) {
+    function _updateTaxRate(uint256 _jiraPrice) internal returns (uint256) {
         if (autoCalculateTax) {
             for (uint8 tierId = uint8(getTaxTiersTwapsCount()).sub(1); tierId >= 0; --tierId) {
-                if (_bombPrice >= taxTiersTwaps[tierId]) {
+                if (_jiraPrice >= taxTiersTwaps[tierId]) {
                     require(taxTiersRates[tierId] < 10000, "tax equal or bigger to 100%");
                     taxRate = taxTiersRates[tierId];
                     return taxTiersRates[tierId];
@@ -153,9 +153,9 @@ contract Bomb is ERC20Burnable, Operator {
         autoCalculateTax = false;
     }
 
-    function setBombOracle(address _bombOracle) public onlyOperatorOrTaxOffice {
-        require(_bombOracle != address(0), "oracle address cannot be 0 address");
-        bombOracle = _bombOracle;
+    function setJiraOracle(address _jiraOracle) public onlyOperatorOrTaxOffice {
+        require(_jiraOracle != address(0), "oracle address cannot be 0 address");
+        jiraOracle = _jiraOracle;
     }
 
     function setTaxOffice(address _taxOffice) public onlyOperatorOrTaxOffice {
@@ -188,9 +188,9 @@ contract Bomb is ERC20Burnable, Operator {
     }
 
     /**
-     * @notice Operator mints BOMB to a recipient
+     * @notice Operator mints JIRA to a recipient
      * @param recipient_ The address of recipient
-     * @param amount_ The amount of BOMB to mint to
+     * @param amount_ The amount of JIRA to mint to
      * @return whether the process has been done
      */
     function mint(address recipient_, uint256 amount_) public onlyOperator returns (bool) {
@@ -218,9 +218,9 @@ contract Bomb is ERC20Burnable, Operator {
         bool burnTax = false;
 
         if (autoCalculateTax) {
-            uint256 currentBombPrice = _getBombPrice();
-            currentTaxRate = _updateTaxRate(currentBombPrice);
-            if (currentBombPrice < burnThreshold) {
+            uint256 currentJiraPrice = _getJiraPrice();
+            currentTaxRate = _updateTaxRate(currentJiraPrice);
+            if (currentJiraPrice < burnThreshold) {
                 burnTax = true;
             }
         }
@@ -263,16 +263,16 @@ contract Bomb is ERC20Burnable, Operator {
      */
     function distributeReward(
         address _genesisPool,
-        address _bombPool,
+        address _jiraPool,
         address _airdropWallet
     ) external onlyOperator {
         require(!rewardPoolDistributed, "only can distribute once");
         require(_genesisPool != address(0), "!_genesisPool");
-        require(_bombPool != address(0), "!_bombPool");
+        require(_jiraPool != address(0), "!_jiraPool");
         require(_airdropWallet != address(0), "!_airdropWallet");
         rewardPoolDistributed = true;
         _mint(_genesisPool, INITIAL_GENESIS_POOL_DISTRIBUTION);
-        _mint(_bombPool, INITIAL_BOMB_POOL_DISTRIBUTION);
+        _mint(_jiraPool, INITIAL_JIRA_POOL_DISTRIBUTION);
         _mint(_airdropWallet, INITIAL_AIRDROP_WALLET_DISTRIBUTION);
     }
 

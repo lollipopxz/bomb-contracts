@@ -7,7 +7,7 @@ module.exports = async function ({
 
     const { deployer, dev } = await getNamedAccounts();
 
-    const bomb = await ethers.getContract("Bomb");
+    const Jira = await ethers.getContract("Jira");
     //  testnet
     //const btcAddress = "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca";
     // mainnet
@@ -26,4 +26,4 @@ module.exports = async function ({
     });
 };
 
-module.exports.tags = ["BombOracle"];
+module.exports.tags = ["JiraOracle","Step2"];

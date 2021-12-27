@@ -20,43 +20,43 @@ $$$$$$$  | $$$$$$  |$$ | \_/ $$ |$$$$$$$  |$$\ $$ | $$ | $$ |\$$$$$$  |$$ |  $$ 
 \_______/  \______/ \__|     \__|\_______/ \__|\__| \__| \__| \______/ \__|  \__| \_______| \____$$ |
                                                                                            $$\   $$ |
                                                                                            \$$$$$$  |
-    http://bomb.money                                                                      \______/ 
+    http://jira.money                                                                      \______/ 
 */
 contract TaxOfficeV2 is Operator {
     using SafeMath for uint256;
 
-    address public bomb = address(0x522348779DCb2911539e76A1042aA922F9C47Ee3);
+    address public jira = address(0x522348779DCb2911539e76A1042aA922F9C47Ee3);
     address public weth = address(0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c);
     address public uniRouter = address(0x10ED43C718714eb63d5aA57B78B54704E256024E);
 
     mapping(address => bool) public taxExclusionEnabled;
 
     function setTaxTiersTwap(uint8 _index, uint256 _value) public onlyOperator returns (bool) {
-        return ITaxable(bomb).setTaxTiersTwap(_index, _value);
+        return ITaxable(jira).setTaxTiersTwap(_index, _value);
     }
 
     function setTaxTiersRate(uint8 _index, uint256 _value) public onlyOperator returns (bool) {
-        return ITaxable(bomb).setTaxTiersRate(_index, _value);
+        return ITaxable(jira).setTaxTiersRate(_index, _value);
     }
 
     function enableAutoCalculateTax() public onlyOperator {
-        ITaxable(bomb).enableAutoCalculateTax();
+        ITaxable(jira).enableAutoCalculateTax();
     }
 
     function disableAutoCalculateTax() public onlyOperator {
-        ITaxable(bomb).disableAutoCalculateTax();
+        ITaxable(jira).disableAutoCalculateTax();
     }
 
     function setTaxRate(uint256 _taxRate) public onlyOperator {
-        ITaxable(bomb).setTaxRate(_taxRate);
+        ITaxable(jira).setTaxRate(_taxRate);
     }
 
     function setBurnThreshold(uint256 _burnThreshold) public onlyOperator {
-        ITaxable(bomb).setBurnThreshold(_burnThreshold);
+        ITaxable(jira).setBurnThreshold(_burnThreshold);
     }
 
     function setTaxCollectorAddress(address _taxCollectorAddress) public onlyOperator {
-        ITaxable(bomb).setTaxCollectorAddress(_taxCollectorAddress);
+        ITaxable(jira).setTaxCollectorAddress(_taxCollectorAddress);
     }
 
     function excludeAddressFromTax(address _address) external onlyOperator returns (bool) {
@@ -64,8 +64,8 @@ contract TaxOfficeV2 is Operator {
     }
 
     function _excludeAddressFromTax(address _address) private returns (bool) {
-        if (!ITaxable(bomb).isAddressExcluded(_address)) {
-            return ITaxable(bomb).excludeAddress(_address);
+        if (!ITaxable(jira).isAddressExcluded(_address)) {
+            return ITaxable(jira).excludeAddress(_address);
         }
     }
 
@@ -74,20 +74,20 @@ contract TaxOfficeV2 is Operator {
     }
 
     function _includeAddressInTax(address _address) private returns (bool) {
-        if (ITaxable(bomb).isAddressExcluded(_address)) {
-            return ITaxable(bomb).includeAddress(_address);
+        if (ITaxable(jira).isAddressExcluded(_address)) {
+            return ITaxable(jira).includeAddress(_address);
         }
     }
 
     function taxRate() external returns (uint256) {
-        return ITaxable(bomb).taxRate();
+        return ITaxable(jira).taxRate();
     }
 
     function addLiquidityTaxFree(
         address token,
-        uint256 amtBomb,
+        uint256 amtJira,
         uint256 amtToken,
-        uint256 amtBombMin,
+        uint256 amtJiraMin,
         uint256 amtTokenMin
     )
         external
@@ -97,42 +97,42 @@ contract TaxOfficeV2 is Operator {
             uint256
         )
     {
-        require(amtBomb != 0 && amtToken != 0, "amounts can't be 0");
+        require(amtJira != 0 && amtToken != 0, "amounts can't be 0");
         _excludeAddressFromTax(msg.sender);
 
-        IERC20(bomb).transferFrom(msg.sender, address(this), amtBomb);
+        IERC20(jira).transferFrom(msg.sender, address(this), amtJira);
         IERC20(token).transferFrom(msg.sender, address(this), amtToken);
-        _approveTokenIfNeeded(bomb, uniRouter);
+        _approveTokenIfNeeded(jira, uniRouter);
         _approveTokenIfNeeded(token, uniRouter);
 
         _includeAddressInTax(msg.sender);
 
-        uint256 resultAmtBomb;
+        uint256 resultAmtJira;
         uint256 resultAmtToken;
         uint256 liquidity;
-        (resultAmtBomb, resultAmtToken, liquidity) = IUniswapV2Router(uniRouter).addLiquidity(
-            bomb,
+        (resultAmtJira, resultAmtToken, liquidity) = IUniswapV2Router(uniRouter).addLiquidity(
+            jira,
             token,
-            amtBomb,
+            amtJira,
             amtToken,
-            amtBombMin,
+            amtJiraMin,
             amtTokenMin,
             msg.sender,
             block.timestamp
         );
 
-        if (amtBomb.sub(resultAmtBomb) > 0) {
-            IERC20(bomb).transfer(msg.sender, amtBomb.sub(resultAmtBomb));
+        if (amtJira.sub(resultAmtJira) > 0) {
+            IERC20(jira).transfer(msg.sender, amtJira.sub(resultAmtJira));
         }
         if (amtToken.sub(resultAmtToken) > 0) {
             IERC20(token).transfer(msg.sender, amtToken.sub(resultAmtToken));
         }
-        return (resultAmtBomb, resultAmtToken, liquidity);
+        return (resultAmtJira, resultAmtToken, liquidity);
     }
 
     function addLiquidityETHTaxFree(
-        uint256 amtBomb,
-        uint256 amtBombMin,
+        uint256 amtJira,
+        uint256 amtJiraMin,
         uint256 amtEthMin
     )
         external
@@ -143,38 +143,38 @@ contract TaxOfficeV2 is Operator {
             uint256
         )
     {
-        require(amtBomb != 0 && msg.value != 0, "amounts can't be 0");
+        require(amtJira != 0 && msg.value != 0, "amounts can't be 0");
         _excludeAddressFromTax(msg.sender);
 
-        IERC20(bomb).transferFrom(msg.sender, address(this), amtBomb);
-        _approveTokenIfNeeded(bomb, uniRouter);
+        IERC20(jira).transferFrom(msg.sender, address(this), amtJira);
+        _approveTokenIfNeeded(jira, uniRouter);
 
         _includeAddressInTax(msg.sender);
 
-        uint256 resultAmtBomb;
+        uint256 resultAmtJira;
         uint256 resultAmtEth;
         uint256 liquidity;
-        (resultAmtBomb, resultAmtEth, liquidity) = IUniswapV2Router(uniRouter).addLiquidityETH{value: msg.value}(
-            bomb,
-            amtBomb,
-            amtBombMin,
+        (resultAmtJira, resultAmtEth, liquidity) = IUniswapV2Router(uniRouter).addLiquidityETH{value: msg.value}(
+            jira,
+            amtJira,
+            amtJiraMin,
             amtEthMin,
             msg.sender,
             block.timestamp
         );
 
-        if (amtBomb.sub(resultAmtBomb) > 0) {
-            IERC20(bomb).transfer(msg.sender, amtBomb.sub(resultAmtBomb));
+        if (amtJira.sub(resultAmtJira) > 0) {
+            IERC20(jira).transfer(msg.sender, amtJira.sub(resultAmtJira));
         }
-        return (resultAmtBomb, resultAmtEth, liquidity);
+        return (resultAmtJira, resultAmtEth, liquidity);
     }
 
-    function setTaxableBombOracle(address _bombOracle) external onlyOperator {
-        ITaxable(bomb).setBombOracle(_bombOracle);
+    function setTaxableJiraOracle(address _jiraOracle) external onlyOperator {
+        ITaxable(jira).setJiraOracle(_jiraOracle);
     }
 
     function transferTaxOffice(address _newTaxOffice) external onlyOperator {
-        ITaxable(bomb).setTaxOffice(_newTaxOffice);
+        ITaxable(jira).setTaxOffice(_newTaxOffice);
     }
 
     function taxFreeTransferFrom(
@@ -184,7 +184,7 @@ contract TaxOfficeV2 is Operator {
     ) external {
         require(taxExclusionEnabled[msg.sender], "Address not approved for tax free transfers");
         _excludeAddressFromTax(_sender);
-        IERC20(bomb).transferFrom(_sender, _recipient, _amt);
+        IERC20(jira).transferFrom(_sender, _recipient, _amt);
         _includeAddressInTax(_sender);
     }
 

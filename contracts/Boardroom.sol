@@ -53,7 +53,7 @@ $$$$$$$  | $$$$$$  |$$ | \_/ $$ |$$$$$$$  |$$\ $$ | $$ | $$ |\$$$$$$  |$$ |  $$ 
 \_______/  \______/ \__|     \__|\_______/ \__|\__| \__| \__| \______/ \__|  \__| \_______| \____$$ |
                                                                                            $$\   $$ |
                                                                                            \$$$$$$  |
-    http://bomb.money                                                                      \______/ 
+    http://jira.money                                                                      \______/ 
 */
 contract Boardroom is ShareWrapper, ContractGuard {
     using SafeERC20 for IERC20;
@@ -82,7 +82,7 @@ contract Boardroom is ShareWrapper, ContractGuard {
     // flags
     bool public initialized = false;
 
-    IERC20 public bomb;
+    IERC20 public jira;
     ITreasury public treasury;
 
     mapping(address => Memberseat) public members;
@@ -129,11 +129,11 @@ contract Boardroom is ShareWrapper, ContractGuard {
     /* ========== GOVERNANCE ========== */
 
     function initialize(
-        IERC20 _bomb,
+        IERC20 _jira,
         IERC20 _share,
         ITreasury _treasury
     ) public notInitialized {
-        bomb = _bomb;
+        jira = _jira;
         share = _share;
         treasury = _treasury;
 
@@ -194,8 +194,8 @@ contract Boardroom is ShareWrapper, ContractGuard {
         return treasury.nextEpochPoint();
     }
 
-    function getBombPrice() external view returns (uint256) {
-        return treasury.getBombPrice();
+    function getJiraPrice() external view returns (uint256) {
+        return treasury.getJiraPrice();
     }
 
     // =========== Member getters
@@ -238,7 +238,7 @@ contract Boardroom is ShareWrapper, ContractGuard {
             require(members[msg.sender].epochTimerStart.add(rewardLockupEpochs) <= treasury.epoch(), "Boardroom: still in reward lockup");
             members[msg.sender].epochTimerStart = treasury.epoch(); // reset timer
             members[msg.sender].rewardEarned = 0;
-            bomb.safeTransfer(msg.sender, reward);
+            jira.safeTransfer(msg.sender, reward);
             emit RewardPaid(msg.sender, reward);
         }
     }
@@ -254,7 +254,7 @@ contract Boardroom is ShareWrapper, ContractGuard {
         BoardroomSnapshot memory newSnapshot = BoardroomSnapshot({time: block.number, rewardReceived: amount, rewardPerShare: nextRPS});
         boardroomHistory.push(newSnapshot);
 
-        bomb.safeTransferFrom(msg.sender, address(this), amount);
+        jira.safeTransferFrom(msg.sender, address(this), amount);
         emit RewardAdded(msg.sender, amount);
     }
 
@@ -264,7 +264,7 @@ contract Boardroom is ShareWrapper, ContractGuard {
         address _to
     ) external onlyOperator {
         // do not allow to drain core tokens
-        require(address(_token) != address(bomb), "bomb");
+        require(address(_token) != address(jira), "jira");
         require(address(_token) != address(share), "share");
         _token.safeTransfer(_to, _amount);
     }

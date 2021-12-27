@@ -18,39 +18,39 @@ $$$$$$$  | $$$$$$  |$$ | \_/ $$ |$$$$$$$  |$$\ $$ | $$ | $$ |\$$$$$$  |$$ |  $$ 
 \_______/  \______/ \__|     \__|\_______/ \__|\__| \__| \__| \______/ \__|  \__| \_______| \____$$ |
                                                                                            $$\   $$ |
                                                                                            \$$$$$$  |
-    http://bomb.money                                                                      \______/ 
+    http://jira.money                                                                      \______/ 
 */
 
 
 contract TaxOracle is Ownable {
     using SafeMath for uint256;
 
-    IERC20 public bomb;
+    IERC20 public jira;
     IERC20 public btcb;
     address public pair;
 
     constructor(
-        address _bomb,
+        address _jira,
         address _btcb,
         address _pair
     ) public {
-        require(_bomb != address(0), "bomb address cannot be 0");
+        require(_jira != address(0), "jira address cannot be 0");
         require(_btcb != address(0), "btcb address cannot be 0");
         require(_pair != address(0), "pair address cannot be 0");
-        bomb = IERC20(_bomb);
+        jira = IERC20(_jira);
         btcb = IERC20(_btcb);
         pair = _pair;
     }
 
     function consult(address _token, uint256 _amountIn) external view returns (uint144 amountOut) {
-        require(_token == address(bomb), "token needs to be bomb");
-        uint256 bombBalance = bomb.balanceOf(pair);
+        require(_token == address(jira), "token needs to be jira");
+        uint256 jiraBalance = jira.balanceOf(pair);
         uint256 btcbBalance = btcb.balanceOf(pair);
-        return uint144(bombBalance.mul(_amountIn).div(btcbBalance));
+        return uint144(jiraBalance.mul(_amountIn).div(btcbBalance));
     }
 
-    function getBombBalance() external view returns (uint256) {
-	return bomb.balanceOf(pair);
+    function getJiraBalance() external view returns (uint256) {
+	return jira.balanceOf(pair);
     }
 
     function getBtcbBalance() external view returns (uint256) {
@@ -58,15 +58,15 @@ contract TaxOracle is Ownable {
     }
 
     function getPrice() external view returns (uint256) {
-        uint256 bombBalance = bomb.balanceOf(pair);
+        uint256 jiraBalance = jira.balanceOf(pair);
         uint256 btcbBalance = btcb.balanceOf(pair);
-        return bombBalance.mul(1e18).div(btcbBalance);
+        return jiraBalance.mul(1e18).div(btcbBalance);
     }
 
 
-    function setBomb(address _bomb) external onlyOwner {
-        require(_bomb != address(0), "bomb address cannot be 0");
-        bomb = IERC20(_bomb);
+    function setJira(address _jira) external onlyOwner {
+        require(_jira != address(0), "jira address cannot be 0");
+        jira = IERC20(_jira);
     }
 
     function setBtcb(address _btcb) external onlyOwner {

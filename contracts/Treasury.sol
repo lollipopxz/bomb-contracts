@@ -26,7 +26,7 @@ $$$$$$$  | $$$$$$  |$$ | \_/ $$ |$$$$$$$  |$$\ $$ | $$ | $$ |\$$$$$$  |$$ |  $$ 
 \_______/  \______/ \__|     \__|\_______/ \__|\__| \__| \__| \______/ \__|  \__| \_______| \____$$ |
                                                                                            $$\   $$ |
                                                                                            \$$$$$$  |
-    http://bomb.money                                                                      \______/ 
+    http://jira.money                                                                      \______/ 
 */
 contract Treasury is ContractGuard {
     using SafeERC20 for IERC20;
@@ -52,21 +52,21 @@ contract Treasury is ContractGuard {
 
     // exclusions from total supply
     address[] public excludedFromTotalSupply = [
-        address(0xB7e1E341b2CBCc7d1EdF4DC6E5e962aE5C621ca5), // BombGenesisPool
-        address(0x04b79c851ed1A36549C6151189c79EC0eaBca745) // new BombRewardPool
+        address(0xB7e1E341b2CBCc7d1EdF4DC6E5e962aE5C621ca5), // JiraGenesisPool
+        address(0x04b79c851ed1A36549C6151189c79EC0eaBca745) // new JiraRewardPool
     ];
 
     // core components
-    address public bomb;
+    address public jira;
     address public bbond;
     address public bshare;
 
     address public boardroom;
-    address public bombOracle;
+    address public jiraOracle;
 
     // price
-    uint256 public bombPriceOne;
-    uint256 public bombPriceCeiling;
+    uint256 public jiraPriceOne;
+    uint256 public jiraPriceCeiling;
 
     uint256 public seigniorageSaved;
 
@@ -79,18 +79,18 @@ contract Treasury is ContractGuard {
     uint256 public maxSupplyContractionPercent;
     uint256 public maxDebtRatioPercent;
 
-    // 28 first epochs (1 week) with 4.5% expansion regardless of BOMB price
+    // 28 first epochs (1 week) with 4.5% expansion regardless of JIRA price
     uint256 public bootstrapEpochs;
     uint256 public bootstrapSupplyExpansionPercent;
 
     /* =================== Added variables =================== */
-    uint256 public previousEpochBombPrice;
+    uint256 public previousEpochJiraPrice;
     uint256 public maxDiscountRate; // when purchasing bond
     uint256 public maxPremiumRate; // when redeeming bond
     uint256 public discountPercent;
     uint256 public premiumThreshold;
     uint256 public premiumPercent;
-    uint256 public mintingFactorForPayingDebt; // print extra BOMB during debt phase
+    uint256 public mintingFactorForPayingDebt; // print extra JIRA during debt phase
 
     address public daoFund;
     uint256 public daoFundSharedPercent;
@@ -102,8 +102,8 @@ contract Treasury is ContractGuard {
 
     event Initialized(address indexed executor, uint256 at);
     event BurnedBonds(address indexed from, uint256 bondAmount);
-    event RedeemedBonds(address indexed from, uint256 bombAmount, uint256 bondAmount);
-    event BoughtBonds(address indexed from, uint256 bombAmount, uint256 bondAmount);
+    event RedeemedBonds(address indexed from, uint256 jiraAmount, uint256 bondAmount);
+    event BoughtBonds(address indexed from, uint256 jiraAmount, uint256 bondAmount);
     event TreasuryFunded(uint256 timestamp, uint256 seigniorage);
     event BoardroomFunded(uint256 timestamp, uint256 seigniorage);
     event DaoFundFunded(uint256 timestamp, uint256 seigniorage);
@@ -128,12 +128,12 @@ contract Treasury is ContractGuard {
         _;
 
         epoch = epoch.add(1);
-        epochSupplyContractionLeft = (getBombPrice() > bombPriceCeiling) ? 0 : getBombCirculatingSupply().mul(maxSupplyContractionPercent).div(10000);
+        epochSupplyContractionLeft = (getJiraPrice() > jiraPriceCeiling) ? 0 : getJiraCirculatingSupply().mul(maxSupplyContractionPercent).div(10000);
     }
 
     modifier checkOperator() {
         require(
-            IBasisAsset(bomb).operator() == address(this) &&
+            IBasisAsset(jira).operator() == address(this) &&
                 IBasisAsset(bbond).operator() == address(this) &&
                 IBasisAsset(bshare).operator() == address(this) &&
                 Operator(boardroom).operator() == address(this),
@@ -161,19 +161,19 @@ contract Treasury is ContractGuard {
     }
 
     // oracle
-    function getBombPrice() public view returns (uint256 bombPrice) {
-        try IOracle(bombOracle).consult(bomb, 1e18) returns (uint144 price) {
+    function getJiraPrice() public view returns (uint256 jiraPrice) {
+        try IOracle(jiraOracle).consult(jira, 1e18) returns (uint144 price) {
             return uint256(price);
         } catch {
-            revert("Treasury: failed to consult BOMB price from the oracle");
+            revert("Treasury: failed to consult JIRA price from the oracle");
         }
     }
 
-    function getBombUpdatedPrice() public view returns (uint256 _bombPrice) {
-        try IOracle(bombOracle).twap(bomb, 1e18) returns (uint144 price) {
+    function getJiraUpdatedPrice() public view returns (uint256 _jiraPrice) {
+        try IOracle(jiraOracle).twap(jira, 1e18) returns (uint144 price) {
             return uint256(price);
         } catch {
-            revert("Treasury: failed to consult BOMB price from the oracle");
+            revert("Treasury: failed to consult JIRA price from the oracle");
         }
     }
 
@@ -182,41 +182,41 @@ contract Treasury is ContractGuard {
         return seigniorageSaved;
     }
 
-    function getBurnableBombLeft() public view returns (uint256 _burnableBombLeft) {
-        uint256 _bombPrice = getBombPrice();
-        if (_bombPrice <= bombPriceOne) {
-            uint256 _bombSupply = getBombCirculatingSupply();
-            uint256 _bondMaxSupply = _bombSupply.mul(maxDebtRatioPercent).div(10000);
+    function getBurnableJiraLeft() public view returns (uint256 _burnableJiraLeft) {
+        uint256 _jiraPrice = getJiraPrice();
+        if (_jiraPrice <= jiraPriceOne) {
+            uint256 _jiraSupply = getJiraCirculatingSupply();
+            uint256 _bondMaxSupply = _jiraSupply.mul(maxDebtRatioPercent).div(10000);
             uint256 _bondSupply = IERC20(bbond).totalSupply();
             if (_bondMaxSupply > _bondSupply) {
                 uint256 _maxMintableBond = _bondMaxSupply.sub(_bondSupply);
-                uint256 _maxBurnableBomb = _maxMintableBond.mul(_bombPrice).div(1e14);
-                _burnableBombLeft = Math.min(epochSupplyContractionLeft, _maxBurnableBomb);
+                uint256 _maxBurnableJira = _maxMintableBond.mul(_jiraPrice).div(1e14);
+                _burnableJiraLeft = Math.min(epochSupplyContractionLeft, _maxBurnableJira);
             }
         }
     }
 
     function getRedeemableBonds() public view returns (uint256 _redeemableBonds) {
-        uint256 _bombPrice = getBombPrice();
-        if (_bombPrice > bombPriceCeiling) {
-            uint256 _totalBomb = IERC20(bomb).balanceOf(address(this));
+        uint256 _jiraPrice = getJiraPrice();
+        if (_jiraPrice > jiraPriceCeiling) {
+            uint256 _totalJira = IERC20(jira).balanceOf(address(this));
             uint256 _rate = getBondPremiumRate();
             if (_rate > 0) {
-                _redeemableBonds = _totalBomb.mul(1e14).div(_rate);
+                _redeemableBonds = _totalJira.mul(1e14).div(_rate);
             }
         }
     }
 
     function getBondDiscountRate() public view returns (uint256 _rate) {
-        uint256 _bombPrice = getBombPrice();
-        if (_bombPrice <= bombPriceOne) {
+        uint256 _jiraPrice = getJiraPrice();
+        if (_jiraPrice <= jiraPriceOne) {
             if (discountPercent == 0) {
                 // no discount
-                _rate = bombPriceOne;
+                _rate = jiraPriceOne;
             } else {
-                uint256 _bondAmount = bombPriceOne.mul(1e18).div(_bombPrice); // to burn 1 BOMB
-                uint256 _discountAmount = _bondAmount.sub(bombPriceOne).mul(discountPercent).div(10000);
-                _rate = bombPriceOne.add(_discountAmount);
+                uint256 _bondAmount = jiraPriceOne.mul(1e18).div(_jiraPrice); // to burn 1 JIRA
+                uint256 _discountAmount = _bondAmount.sub(jiraPriceOne).mul(discountPercent).div(10000);
+                _rate = jiraPriceOne.add(_discountAmount);
                 if (maxDiscountRate > 0 && _rate > maxDiscountRate) {
                     _rate = maxDiscountRate;
                 }
@@ -225,19 +225,19 @@ contract Treasury is ContractGuard {
     }
 
     function getBondPremiumRate() public view returns (uint256 _rate) {
-        uint256 _bombPrice = getBombPrice();
-        if (_bombPrice > bombPriceCeiling) {
-            uint256 _bombPricePremiumThreshold = bombPriceOne.mul(premiumThreshold).div(100);
-            if (_bombPrice >= _bombPricePremiumThreshold) {
+        uint256 _jiraPrice = getJiraPrice();
+        if (_jiraPrice > jiraPriceCeiling) {
+            uint256 _jiraPricePremiumThreshold = jiraPriceOne.mul(premiumThreshold).div(100);
+            if (_jiraPrice >= _jiraPricePremiumThreshold) {
                 //Price > 1.10
-                uint256 _premiumAmount = _bombPrice.sub(bombPriceOne).mul(premiumPercent).div(10000);
-                _rate = bombPriceOne.add(_premiumAmount);
+                uint256 _premiumAmount = _jiraPrice.sub(jiraPriceOne).mul(premiumPercent).div(10000);
+                _rate = jiraPriceOne.add(_premiumAmount);
                 if (maxPremiumRate > 0 && _rate > maxPremiumRate) {
                     _rate = maxPremiumRate;
                 }
             } else {
                 // no premium bonus
-                _rate = bombPriceOne;
+                _rate = jiraPriceOne;
             }
         }
     }
@@ -245,22 +245,22 @@ contract Treasury is ContractGuard {
     /* ========== GOVERNANCE ========== */
 
     function initialize(
-        address _bomb,
+        address _jira,
         address _bbond,
         address _bshare,
-        address _bombOracle,
+        address _jiraOracle,
         address _boardroom,
         uint256 _startTime
     ) public notInitialized {
-        bomb = _bomb;
+        jira = _jira;
         bbond = _bbond;
         bshare = _bshare;
-        bombOracle = _bombOracle;
+        jiraOracle = _jiraOracle;
         boardroom = _boardroom;
         startTime = _startTime;
 
-        bombPriceOne = 10**14; // This is to allow a PEG of 10,000 BOMB per BTC
-        bombPriceCeiling = bombPriceOne.mul(101).div(100);
+        jiraPriceOne = 10**14; // This is to allow a PEG of 10,000 JIRA per BTC
+        jiraPriceCeiling = jiraPriceOne.mul(101).div(100);
 
         // Dynamic max expansion percent
         supplyTiers = [0 ether, 500000 ether, 1000000 ether, 1500000 ether, 2000000 ether, 5000000 ether, 10000000 ether, 20000000 ether, 50000000 ether];
@@ -270,7 +270,7 @@ contract Treasury is ContractGuard {
 
         bondDepletionFloorPercent = 10000; // 100% of Bond supply for depletion floor
         seigniorageExpansionFloorPercent = 3500; // At least 35% of expansion reserved for boardroom
-        maxSupplyContractionPercent = 300; // Upto 3.0% supply for contraction (to burn BOMB and mint tBOND)
+        maxSupplyContractionPercent = 300; // Upto 3.0% supply for contraction (to burn JIRA and mint tBOND)
         maxDebtRatioPercent = 4500; // Upto 35% supply of tBOND to purchase
 
         premiumThreshold = 110;
@@ -281,7 +281,7 @@ contract Treasury is ContractGuard {
         bootstrapSupplyExpansionPercent = 450;
 
         // set seigniorageSaved to it's balance
-        seigniorageSaved = IERC20(bomb).balanceOf(address(this));
+        seigniorageSaved = IERC20(jira).balanceOf(address(this));
 
         initialized = true;
         operator = msg.sender;
@@ -296,13 +296,13 @@ contract Treasury is ContractGuard {
         boardroom = _boardroom;
     }
 
-    function setBombOracle(address _bombOracle) external onlyOperator {
-        bombOracle = _bombOracle;
+    function setJiraOracle(address _jiraOracle) external onlyOperator {
+        jiraOracle = _jiraOracle;
     }
 
-    function setBombPriceCeiling(uint256 _bombPriceCeiling) external onlyOperator {
-        require(_bombPriceCeiling >= bombPriceOne && _bombPriceCeiling <= bombPriceOne.mul(120).div(100), "out of range"); // [$1.0, $1.2]
-        bombPriceCeiling = _bombPriceCeiling;
+    function setJiraPriceCeiling(uint256 _jiraPriceCeiling) external onlyOperator {
+        require(_jiraPriceCeiling >= jiraPriceOne && _jiraPriceCeiling <= jiraPriceOne.mul(120).div(100), "out of range"); // [$1.0, $1.2]
+        jiraPriceCeiling = _jiraPriceCeiling;
     }
 
     function setMaxSupplyExpansionPercents(uint256 _maxSupplyExpansionPercent) external onlyOperator {
@@ -383,7 +383,7 @@ contract Treasury is ContractGuard {
     }
 
     function setPremiumThreshold(uint256 _premiumThreshold) external onlyOperator {
-        require(_premiumThreshold >= bombPriceCeiling, "_premiumThreshold exceeds bombPriceCeiling");
+        require(_premiumThreshold >= jiraPriceCeiling, "_premiumThreshold exceeds jiraPriceCeiling");
         require(_premiumThreshold <= 150, "_premiumThreshold is higher than 1.5");
         premiumThreshold = _premiumThreshold;
     }
@@ -400,103 +400,103 @@ contract Treasury is ContractGuard {
 
     /* ========== MUTABLE FUNCTIONS ========== */
 
-    function _updateBombPrice() internal {
-        try IOracle(bombOracle).update() {} catch {}
+    function _updateJiraPrice() internal {
+        try IOracle(jiraOracle).update() {} catch {}
     }
 
-    function getBombCirculatingSupply() public view returns (uint256) {
-        IERC20 bombErc20 = IERC20(bomb);
-        uint256 totalSupply = bombErc20.totalSupply();
+    function getJiraCirculatingSupply() public view returns (uint256) {
+        IERC20 jiraErc20 = IERC20(jira);
+        uint256 totalSupply = jiraErc20.totalSupply();
         uint256 balanceExcluded = 0;
         for (uint8 entryId = 0; entryId < excludedFromTotalSupply.length; ++entryId) {
-            balanceExcluded = balanceExcluded.add(bombErc20.balanceOf(excludedFromTotalSupply[entryId]));
+            balanceExcluded = balanceExcluded.add(jiraErc20.balanceOf(excludedFromTotalSupply[entryId]));
         }
         return totalSupply.sub(balanceExcluded);
     }
 
-    function buyBonds(uint256 _bombAmount, uint256 targetPrice) external onlyOneBlock checkCondition checkOperator {
-        require(_bombAmount > 0, "Treasury: cannot purchase bonds with zero amount");
+    function buyBonds(uint256 _jiraAmount, uint256 targetPrice) external onlyOneBlock checkCondition checkOperator {
+        require(_jiraAmount > 0, "Treasury: cannot purchase bonds with zero amount");
 
-        uint256 bombPrice = getBombPrice();
-        require(bombPrice == targetPrice, "Treasury: BOMB price moved");
+        uint256 jiraPrice = getJiraPrice();
+        require(jiraPrice == targetPrice, "Treasury: JIRA price moved");
         require(
-            bombPrice < bombPriceOne, // price < $1
-            "Treasury: bombPrice not eligible for bond purchase"
+            jiraPrice < jiraPriceOne, // price < $1
+            "Treasury: jiraPrice not eligible for bond purchase"
         );
 
-        require(_bombAmount <= epochSupplyContractionLeft, "Treasury: not enough bond left to purchase");
+        require(_jiraAmount <= epochSupplyContractionLeft, "Treasury: not enough bond left to purchase");
 
         uint256 _rate = getBondDiscountRate();
         require(_rate > 0, "Treasury: invalid bond rate");
 
-        uint256 _bondAmount = _bombAmount.mul(_rate).div(1e14);
-        uint256 bombSupply = getBombCirculatingSupply();
+        uint256 _bondAmount = _jiraAmount.mul(_rate).div(1e14);
+        uint256 jiraSupply = getJiraCirculatingSupply();
         uint256 newBondSupply = IERC20(bbond).totalSupply().add(_bondAmount);
-        require(newBondSupply <= bombSupply.mul(maxDebtRatioPercent).div(10000), "over max debt ratio");
+        require(newBondSupply <= jiraSupply.mul(maxDebtRatioPercent).div(10000), "over max debt ratio");
 
-        IBasisAsset(bomb).burnFrom(msg.sender, _bombAmount);
+        IBasisAsset(jira).burnFrom(msg.sender, _jiraAmount);
         IBasisAsset(bbond).mint(msg.sender, _bondAmount);
 
-        epochSupplyContractionLeft = epochSupplyContractionLeft.sub(_bombAmount);
-        _updateBombPrice();
+        epochSupplyContractionLeft = epochSupplyContractionLeft.sub(_jiraAmount);
+        _updateJiraPrice();
 
-        emit BoughtBonds(msg.sender, _bombAmount, _bondAmount);
+        emit BoughtBonds(msg.sender, _jiraAmount, _bondAmount);
     }
 
     function redeemBonds(uint256 _bondAmount, uint256 targetPrice) external onlyOneBlock checkCondition checkOperator {
         require(_bondAmount > 0, "Treasury: cannot redeem bonds with zero amount");
 
-        uint256 bombPrice = getBombPrice();
-        require(bombPrice == targetPrice, "Treasury: BOMB price moved");
+        uint256 jiraPrice = getJiraPrice();
+        require(jiraPrice == targetPrice, "Treasury: JIRA price moved");
         require(
-            bombPrice > bombPriceCeiling, // price > $1.01
-            "Treasury: bombPrice not eligible for bond purchase"
+            jiraPrice > jiraPriceCeiling, // price > $1.01
+            "Treasury: jiraPrice not eligible for bond purchase"
         );
 
         uint256 _rate = getBondPremiumRate();
         require(_rate > 0, "Treasury: invalid bond rate");
 
-        uint256 _bombAmount = _bondAmount.mul(_rate).div(1e14);
-        require(IERC20(bomb).balanceOf(address(this)) >= _bombAmount, "Treasury: treasury has no more budget");
+        uint256 _jiraAmount = _bondAmount.mul(_rate).div(1e14);
+        require(IERC20(jira).balanceOf(address(this)) >= _jiraAmount, "Treasury: treasury has no more budget");
 
-        seigniorageSaved = seigniorageSaved.sub(Math.min(seigniorageSaved, _bombAmount));
+        seigniorageSaved = seigniorageSaved.sub(Math.min(seigniorageSaved, _jiraAmount));
 
         IBasisAsset(bbond).burnFrom(msg.sender, _bondAmount);
-        IERC20(bomb).safeTransfer(msg.sender, _bombAmount);
+        IERC20(jira).safeTransfer(msg.sender, _jiraAmount);
 
-        _updateBombPrice();
+        _updateJiraPrice();
 
-        emit RedeemedBonds(msg.sender, _bombAmount, _bondAmount);
+        emit RedeemedBonds(msg.sender, _jiraAmount, _bondAmount);
     }
 
     function _sendToBoardroom(uint256 _amount) internal {
-        IBasisAsset(bomb).mint(address(this), _amount);
+        IBasisAsset(jira).mint(address(this), _amount);
 
         uint256 _daoFundSharedAmount = 0;
         if (daoFundSharedPercent > 0) {
             _daoFundSharedAmount = _amount.mul(daoFundSharedPercent).div(10000);
-            IERC20(bomb).transfer(daoFund, _daoFundSharedAmount);
+            IERC20(jira).transfer(daoFund, _daoFundSharedAmount);
             emit DaoFundFunded(now, _daoFundSharedAmount);
         }
 
         uint256 _devFundSharedAmount = 0;
         if (devFundSharedPercent > 0) {
             _devFundSharedAmount = _amount.mul(devFundSharedPercent).div(10000);
-            IERC20(bomb).transfer(devFund, _devFundSharedAmount);
+            IERC20(jira).transfer(devFund, _devFundSharedAmount);
             emit DevFundFunded(now, _devFundSharedAmount);
         }
 
         _amount = _amount.sub(_daoFundSharedAmount).sub(_devFundSharedAmount);
 
-        IERC20(bomb).safeApprove(boardroom, 0);
-        IERC20(bomb).safeApprove(boardroom, _amount);
+        IERC20(jira).safeApprove(boardroom, 0);
+        IERC20(jira).safeApprove(boardroom, _amount);
         IBoardroom(boardroom).allocateSeigniorage(_amount);
         emit BoardroomFunded(now, _amount);
     }
 
-    function _calculateMaxSupplyExpansionPercent(uint256 _bombSupply) internal returns (uint256) {
+    function _calculateMaxSupplyExpansionPercent(uint256 _jiraSupply) internal returns (uint256) {
         for (uint8 tierId = 8; tierId >= 0; --tierId) {
-            if (_bombSupply >= supplyTiers[tierId]) {
+            if (_jiraSupply >= supplyTiers[tierId]) {
                 maxSupplyExpansionPercent = maxExpansionTiers[tierId];
                 break;
             }
@@ -505,29 +505,29 @@ contract Treasury is ContractGuard {
     }
 
     function allocateSeigniorage() external onlyOneBlock checkCondition checkEpoch checkOperator {
-        _updateBombPrice();
-        previousEpochBombPrice = getBombPrice();
-        uint256 bombSupply = getBombCirculatingSupply().sub(seigniorageSaved);
+        _updateJiraPrice();
+        previousEpochJiraPrice = getJiraPrice();
+        uint256 jiraSupply = getJiraCirculatingSupply().sub(seigniorageSaved);
         if (epoch < bootstrapEpochs) {
             // 28 first epochs with 4.5% expansion
-            _sendToBoardroom(bombSupply.mul(bootstrapSupplyExpansionPercent).div(10000));
+            _sendToBoardroom(jiraSupply.mul(bootstrapSupplyExpansionPercent).div(10000));
         } else {
-            if (previousEpochBombPrice > bombPriceCeiling) {
-                // Expansion ($BOMB Price > 1 $ETH): there is some seigniorage to be allocated
+            if (previousEpochJiraPrice > jiraPriceCeiling) {
+                // Expansion ($JIRA Price > 1 $ETH): there is some seigniorage to be allocated
                 uint256 bondSupply = IERC20(bbond).totalSupply();
-                uint256 _percentage = previousEpochBombPrice.sub(bombPriceOne);
+                uint256 _percentage = previousEpochJiraPrice.sub(jiraPriceOne);
                 uint256 _savedForBond;
                 uint256 _savedForBoardroom;
-                uint256 _mse = _calculateMaxSupplyExpansionPercent(bombSupply).mul(1e14);
+                uint256 _mse = _calculateMaxSupplyExpansionPercent(jiraSupply).mul(1e14);
                 if (_percentage > _mse) {
                     _percentage = _mse;
                 }
                 if (seigniorageSaved >= bondSupply.mul(bondDepletionFloorPercent).div(10000)) {
                     // saved enough to pay debt, mint as usual rate
-                    _savedForBoardroom = bombSupply.mul(_percentage).div(1e14);
+                    _savedForBoardroom = jiraSupply.mul(_percentage).div(1e14);
                 } else {
                     // have not saved enough to pay debt, mint more
-                    uint256 _seigniorage = bombSupply.mul(_percentage).div(1e14);
+                    uint256 _seigniorage = jiraSupply.mul(_percentage).div(1e14);
                     _savedForBoardroom = _seigniorage.mul(seigniorageExpansionFloorPercent).div(10000);
                     _savedForBond = _seigniorage.sub(_savedForBoardroom);
                     if (mintingFactorForPayingDebt > 0) {
@@ -539,7 +539,7 @@ contract Treasury is ContractGuard {
                 }
                 if (_savedForBond > 0) {
                     seigniorageSaved = seigniorageSaved.add(_savedForBond);
-                    IBasisAsset(bomb).mint(address(this), _savedForBond);
+                    IBasisAsset(jira).mint(address(this), _savedForBond);
                     emit TreasuryFunded(now, _savedForBond);
                 }
             }
@@ -552,7 +552,7 @@ contract Treasury is ContractGuard {
         address _to
     ) external onlyOperator {
         // do not allow to drain core tokens
-        require(address(_token) != address(bomb), "bomb");
+        require(address(_token) != address(jira), "jira");
         require(address(_token) != address(bbond), "bond");
         require(address(_token) != address(bshare), "share");
         _token.safeTransfer(_to, _amount);

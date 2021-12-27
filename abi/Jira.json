@@ -137,7 +137,7 @@
   },
   {
     "inputs": [],
-    "name": "INITIAL_BOMB_POOL_DISTRIBUTION",
+    "name": "INITIAL_GENESIS_POOL_DISTRIBUTION",
     "outputs": [
       {
         "internalType": "uint256",
@@ -150,7 +150,7 @@
   },
   {
     "inputs": [],
-    "name": "INITIAL_GENESIS_POOL_DISTRIBUTION",
+    "name": "INITIAL_JIRA_POOL_DISTRIBUTION",
     "outputs": [
       {
         "internalType": "uint256",
@@ -236,19 +236,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "bombOracle",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -351,7 +338,7 @@
       },
       {
         "internalType": "address",
-        "name": "_bombPool",
+        "name": "_jiraPool",
         "type": "address"
       },
       {
@@ -535,6 +522,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "jiraOracle",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -620,19 +620,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_bombOracle",
-        "type": "address"
-      }
-    ],
-    "name": "setBombOracle",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "_burnThreshold",
         "type": "uint256"
@@ -646,6 +633,19 @@
         "type": "bool"
       }
     ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_jiraOracle",
+        "type": "address"
+      }
+    ],
+    "name": "setJiraOracle",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },

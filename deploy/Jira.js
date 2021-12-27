@@ -7,12 +7,12 @@ module.exports = async function ({
 
     const { deployer, dev } = await getNamedAccounts();
 
-    await deploy("BShare", {
+    await deploy("Jira", {
         from: deployer,
-        args: [1638334800, dev, dev],
+        args: [0, dev],
         log: true,
         deterministicDeployment: false,
     });
 };
 
-module.exports.tags = ["BShare"];
+module.exports.tags = ["Jira", "Step1"];

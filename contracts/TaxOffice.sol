@@ -17,57 +17,57 @@ $$$$$$$  | $$$$$$  |$$ | \_/ $$ |$$$$$$$  |$$\ $$ | $$ | $$ |\$$$$$$  |$$ |  $$ 
 \_______/  \______/ \__|     \__|\_______/ \__|\__| \__| \__| \______/ \__|  \__| \_______| \____$$ |
                                                                                            $$\   $$ |
                                                                                            \$$$$$$  |
-    http://bomb.money                                                                      \______/ 
+    http://jira.money                                                                      \______/ 
 */
 contract TaxOffice is Operator {
-    address public bomb;
+    address public jira;
 
-    constructor(address _bomb) public {
-        require(_bomb != address(0), "bomb address cannot be 0");
-        bomb = _bomb;
+    constructor(address _jira) public {
+        require(_jira != address(0), "jira address cannot be 0");
+        jira = _jira;
     }
 
     function setTaxTiersTwap(uint8 _index, uint256 _value) public onlyOperator returns (bool) {
-        return ITaxable(bomb).setTaxTiersTwap(_index, _value);
+        return ITaxable(jira).setTaxTiersTwap(_index, _value);
     }
 
     function setTaxTiersRate(uint8 _index, uint256 _value) public onlyOperator returns (bool) {
-        return ITaxable(bomb).setTaxTiersRate(_index, _value);
+        return ITaxable(jira).setTaxTiersRate(_index, _value);
     }
 
     function enableAutoCalculateTax() public onlyOperator {
-        ITaxable(bomb).enableAutoCalculateTax();
+        ITaxable(jira).enableAutoCalculateTax();
     }
 
     function disableAutoCalculateTax() public onlyOperator {
-        ITaxable(bomb).disableAutoCalculateTax();
+        ITaxable(jira).disableAutoCalculateTax();
     }
 
     function setTaxRate(uint256 _taxRate) public onlyOperator {
-        ITaxable(bomb).setTaxRate(_taxRate);
+        ITaxable(jira).setTaxRate(_taxRate);
     }
 
     function setBurnThreshold(uint256 _burnThreshold) public onlyOperator {
-        ITaxable(bomb).setBurnThreshold(_burnThreshold);
+        ITaxable(jira).setBurnThreshold(_burnThreshold);
     }
 
     function setTaxCollectorAddress(address _taxCollectorAddress) public onlyOperator {
-        ITaxable(bomb).setTaxCollectorAddress(_taxCollectorAddress);
+        ITaxable(jira).setTaxCollectorAddress(_taxCollectorAddress);
     }
 
     function excludeAddressFromTax(address _address) external onlyOperator returns (bool) {
-        return ITaxable(bomb).excludeAddress(_address);
+        return ITaxable(jira).excludeAddress(_address);
     }
 
     function includeAddressInTax(address _address) external onlyOperator returns (bool) {
-        return ITaxable(bomb).includeAddress(_address);
+        return ITaxable(jira).includeAddress(_address);
     }
 
-    function setTaxableBombOracle(address _bombOracle) external onlyOperator {
-        ITaxable(bomb).setBombOracle(_bombOracle);
+    function setTaxableJiraOracle(address _jiraOracle) external onlyOperator {
+        ITaxable(jira).setJiraOracle(_jiraOracle);
     }
 
     function transferTaxOffice(address _newTaxOffice) external onlyOperator {
-        ITaxable(bomb).setTaxOffice(_newTaxOffice);
+        ITaxable(jira).setTaxOffice(_newTaxOffice);
     }
 }

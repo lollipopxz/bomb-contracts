@@ -6,7 +6,7 @@ module.exports = async function ({
     const { deploy } = deployments;
 
     const { deployer, dev } = await getNamedAccounts();
-    console.log(dev)
+    
     await deploy("JBond", {
        
         from: deployer,
@@ -17,4 +17,5 @@ module.exports = async function ({
     
 };
 
-module.exports.tags = ["JBond"];
+
+module.exports.tags = ["JBond", "Step1"];

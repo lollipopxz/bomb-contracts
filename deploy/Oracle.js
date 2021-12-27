@@ -7,15 +7,15 @@ module.exports = async function ({
 
     const { deployer, dev } = await getNamedAccounts();
 
-    const bomb = await ethers.getContract("Bomb");
+    const Jira = await ethers.getContract("Jira");
 
 
-    //testnet
+    //testnet mumbai
     //const pairAddress = "0x742957Dd7b4D4bB7177CF63B61Fd5f0f050Ebaa4";
 
 
     // pancake
-    pairAddress = "0x84392649eb0bC1c1532F2180E58Bae4E1dAbd8D6";
+    //pairAddress = "0x84392649eb0bC1c1532F2180E58Bae4E1dAbd8D6";
 
     await deploy("Oracle", {
         from: deployer,
@@ -25,4 +25,4 @@ module.exports = async function ({
     });
 };
 
-module.exports.tags = ["Oracle"];
+module.exports.tags = ["Oracle","Step2"];

@@ -5,14 +5,14 @@ module.exports = async function ({
 }) {
     const { deploy } = deployments;
 
-    const { deployer, dev } = await getNamedAccounts();
+    const { deployer, dev, community_fund } = await getNamedAccounts();
 
-    await deploy("Bomb", {
+    await deploy("JShare", {
         from: deployer,
-        args: [0, dev],
+        args: [1638334800, dev, community_fund],
         log: true,
         deterministicDeployment: false,
     });
 };
 
-module.exports.tags = ["Bomb"];
+module.exports.tags = ["JShare","Step1"];

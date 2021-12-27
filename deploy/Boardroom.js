@@ -17,5 +17,5 @@ module.exports = async function ({
     });
 };
 
-module.exports.tags = ["Boardroom"];
+module.exports.tags = ["Boardroom", "Step2"];
 //module.exports.dependencies = ["Bomb", "BShare", "BombRewardPool", "BShareRewardPool", "Treasury"];
