@@ -17,5 +17,5 @@ module.exports = async function ({
     });
 };
 
-module.exports.tags = ["JiraRewardPool"];
+module.exports.tags = ["JiraRewardPool", "Step3"];
 //module.exports.dependencies = ["Jira"];

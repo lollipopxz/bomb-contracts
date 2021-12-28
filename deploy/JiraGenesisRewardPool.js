@@ -7,15 +7,15 @@ module.exports = async function ({
 
     const { deployer, dev } = await getNamedAccounts();
 
-    const bomb = await ethers.getContract("Bomb");
+    const jira = await ethers.getContract("Jira");
 
-    await deploy("BombGenesisRewardPool", {
+    await deploy("JiraGenesisRewardPool", {
         from: deployer,
-        args: [bomb.address, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82", 1637449200],
+        args: [jira.address, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82", 1637449200],
         log: true,
         deterministicDeployment: false,
     });
 };
 
-module.exports.tags = ["BombGenesisRewardPool"];
-//module.exports.dependencies = ["Bomb"];
+module.exports.tags = ["JiraGenesisRewardPool", "Step3"];
+//module.exports.dependencies = ["Jira"];

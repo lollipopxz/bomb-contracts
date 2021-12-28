@@ -17,5 +17,5 @@ module.exports = async function ({
     });
 };
 
-module.exports.tags = ["JShareRewardPool"];
+module.exports.tags = ["JShareRewardPool", "Step3"];
 // module.exports.dependencies = ["JShare"];

@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_bshare",
+        "name": "_jshare",
         "type": "address"
       },
       {
@@ -151,19 +151,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "bshare",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -239,6 +226,19 @@
     "name": "governanceRecoverUnsupported",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jshare",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -325,7 +325,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "accBSharePerShare",
+        "name": "accJSharePerShare",
         "type": "uint256"
       },
       {

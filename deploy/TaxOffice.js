@@ -26,4 +26,4 @@ module.exports = async function ({
     });
 };
 
-module.exports.tags = ["TaxOffice","Step2"];
+module.exports.tags = ["TaxOffice"];

@@ -28,4 +28,4 @@ module.exports = async function ({
     });
 };
 
-module.exports.tags = ["TaxOfficeV2", "Step2"];
+module.exports.tags = ["TaxOfficeV2"];
