@@ -30,7 +30,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "bombAmount",
+        "name": "jiraAmount",
         "type": "uint256"
       },
       {
@@ -131,7 +131,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "bombAmount",
+        "name": "jiraAmount",
         "type": "uint256"
       },
       {
@@ -278,58 +278,6 @@
   },
   {
     "inputs": [],
-    "name": "bomb",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "bombOracle",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "bombPriceCeiling",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "bombPriceOne",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "bondDepletionFloorPercent",
     "outputs": [
       {
@@ -384,7 +332,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_bombAmount",
+        "name": "_jiraAmount",
         "type": "uint256"
       },
       {
@@ -510,45 +458,6 @@
   },
   {
     "inputs": [],
-    "name": "getBombCirculatingSupply",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getBombPrice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "bombPrice",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getBombUpdatedPrice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "_bombPrice",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "getBondDiscountRate",
     "outputs": [
       {
@@ -575,11 +484,50 @@
   },
   {
     "inputs": [],
-    "name": "getBurnableBombLeft",
+    "name": "getBurnableJiraLeft",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "_burnableBombLeft",
+        "name": "_burnableJiraLeft",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getJiraCirculatingSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getJiraPrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "jiraPrice",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getJiraUpdatedPrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_jiraPrice",
         "type": "uint256"
       }
     ],
@@ -639,7 +587,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_bomb",
+        "name": "_jira",
         "type": "address"
       },
       {
@@ -654,7 +602,7 @@
       },
       {
         "internalType": "address",
-        "name": "_bombOracle",
+        "name": "_jiraOracle",
         "type": "address"
       },
       {
@@ -694,6 +642,58 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jira",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jiraOracle",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jiraPriceCeiling",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jiraPriceOne",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -850,7 +850,7 @@
   },
   {
     "inputs": [],
-    "name": "previousEpochBombPrice",
+    "name": "previousEpochJiraPrice",
     "outputs": [
       {
         "internalType": "uint256",
@@ -914,32 +914,6 @@
       }
     ],
     "name": "setBoardroom",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_bombOracle",
-        "type": "address"
-      }
-    ],
-    "name": "setBombOracle",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_bombPriceCeiling",
-        "type": "uint256"
-      }
-    ],
-    "name": "setBombPriceCeiling",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1012,6 +986,32 @@
       }
     ],
     "name": "setExtraFunds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_jiraOracle",
+        "type": "address"
+      }
+    ],
+    "name": "setJiraOracle",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_jiraPriceCeiling",
+        "type": "uint256"
+      }
+    ],
+    "name": "setJiraPriceCeiling",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

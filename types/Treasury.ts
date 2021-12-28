@@ -27,10 +27,6 @@ export interface TreasuryInterface extends utils.Interface {
     "boardroomGovernanceRecoverUnsupported(address,uint256,address)": FunctionFragment;
     "boardroomSetLockUp(uint256,uint256)": FunctionFragment;
     "boardroomSetOperator(address)": FunctionFragment;
-    "bomb()": FunctionFragment;
-    "bombOracle()": FunctionFragment;
-    "bombPriceCeiling()": FunctionFragment;
-    "bombPriceOne()": FunctionFragment;
     "bondDepletionFloorPercent()": FunctionFragment;
     "bootstrapEpochs()": FunctionFragment;
     "bootstrapSupplyExpansionPercent()": FunctionFragment;
@@ -44,18 +40,22 @@ export interface TreasuryInterface extends utils.Interface {
     "epoch()": FunctionFragment;
     "epochSupplyContractionLeft()": FunctionFragment;
     "excludedFromTotalSupply(uint256)": FunctionFragment;
-    "getBombCirculatingSupply()": FunctionFragment;
-    "getBombPrice()": FunctionFragment;
-    "getBombUpdatedPrice()": FunctionFragment;
     "getBondDiscountRate()": FunctionFragment;
     "getBondPremiumRate()": FunctionFragment;
-    "getBurnableBombLeft()": FunctionFragment;
+    "getBurnableJiraLeft()": FunctionFragment;
+    "getJiraCirculatingSupply()": FunctionFragment;
+    "getJiraPrice()": FunctionFragment;
+    "getJiraUpdatedPrice()": FunctionFragment;
     "getRedeemableBonds()": FunctionFragment;
     "getReserve()": FunctionFragment;
     "governanceRecoverUnsupported(address,uint256,address)": FunctionFragment;
     "initialize(address,address,address,address,address,uint256)": FunctionFragment;
     "initialized()": FunctionFragment;
     "isInitialized()": FunctionFragment;
+    "jira()": FunctionFragment;
+    "jiraOracle()": FunctionFragment;
+    "jiraPriceCeiling()": FunctionFragment;
+    "jiraPriceOne()": FunctionFragment;
     "maxDebtRatioPercent()": FunctionFragment;
     "maxDiscountRate()": FunctionFragment;
     "maxExpansionTiers(uint256)": FunctionFragment;
@@ -67,17 +67,17 @@ export interface TreasuryInterface extends utils.Interface {
     "operator()": FunctionFragment;
     "premiumPercent()": FunctionFragment;
     "premiumThreshold()": FunctionFragment;
-    "previousEpochBombPrice()": FunctionFragment;
+    "previousEpochJiraPrice()": FunctionFragment;
     "redeemBonds(uint256,uint256)": FunctionFragment;
     "seigniorageExpansionFloorPercent()": FunctionFragment;
     "seigniorageSaved()": FunctionFragment;
     "setBoardroom(address)": FunctionFragment;
-    "setBombOracle(address)": FunctionFragment;
-    "setBombPriceCeiling(uint256)": FunctionFragment;
     "setBondDepletionFloorPercent(uint256)": FunctionFragment;
     "setBootstrap(uint256,uint256)": FunctionFragment;
     "setDiscountPercent(uint256)": FunctionFragment;
     "setExtraFunds(address,uint256,address,uint256)": FunctionFragment;
+    "setJiraOracle(address)": FunctionFragment;
+    "setJiraPriceCeiling(uint256)": FunctionFragment;
     "setMaxDebtRatioPercent(uint256)": FunctionFragment;
     "setMaxDiscountRate(uint256)": FunctionFragment;
     "setMaxExpansionTiersEntry(uint8,uint256)": FunctionFragment;
@@ -115,19 +115,6 @@ export interface TreasuryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "boardroomSetOperator",
     values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "bomb", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "bombOracle",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "bombPriceCeiling",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "bombPriceOne",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "bondDepletionFloorPercent",
@@ -170,18 +157,6 @@ export interface TreasuryInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBombCirculatingSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBombPrice",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBombUpdatedPrice",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getBondDiscountRate",
     values?: undefined
   ): string;
@@ -190,7 +165,19 @@ export interface TreasuryInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getBurnableBombLeft",
+    functionFragment: "getBurnableJiraLeft",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getJiraCirculatingSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getJiraPrice",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getJiraUpdatedPrice",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -215,6 +202,19 @@ export interface TreasuryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "isInitialized",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "jira", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "jiraOracle",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "jiraPriceCeiling",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "jiraPriceOne",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -259,7 +259,7 @@ export interface TreasuryInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "previousEpochBombPrice",
+    functionFragment: "previousEpochJiraPrice",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -279,14 +279,6 @@ export interface TreasuryInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "setBombOracle",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setBombPriceCeiling",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setBondDepletionFloorPercent",
     values: [BigNumberish]
   ): string;
@@ -301,6 +293,14 @@ export interface TreasuryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setExtraFunds",
     values: [string, BigNumberish, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setJiraOracle",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setJiraPriceCeiling",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setMaxDebtRatioPercent",
@@ -372,16 +372,6 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "boardroomSetOperator",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "bomb", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "bombOracle", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "bombPriceCeiling",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "bombPriceOne",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "bondDepletionFloorPercent",
     data: BytesLike
@@ -420,18 +410,6 @@ export interface TreasuryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBombCirculatingSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBombPrice",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBombUpdatedPrice",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getBondDiscountRate",
     data: BytesLike
   ): Result;
@@ -440,7 +418,19 @@ export interface TreasuryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBurnableBombLeft",
+    functionFragment: "getBurnableJiraLeft",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getJiraCirculatingSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getJiraPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getJiraUpdatedPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -459,6 +449,16 @@ export interface TreasuryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "isInitialized",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "jira", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "jiraOracle", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "jiraPriceCeiling",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "jiraPriceOne",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -503,7 +503,7 @@ export interface TreasuryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "previousEpochBombPrice",
+    functionFragment: "previousEpochJiraPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -523,14 +523,6 @@ export interface TreasuryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setBombOracle",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setBombPriceCeiling",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setBondDepletionFloorPercent",
     data: BytesLike
   ): Result;
@@ -544,6 +536,14 @@ export interface TreasuryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setExtraFunds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setJiraOracle",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setJiraPriceCeiling",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -626,7 +626,7 @@ export type BoardroomFundedEventFilter = TypedEventFilter<BoardroomFundedEvent>;
 
 export type BoughtBondsEvent = TypedEvent<
   [string, BigNumber, BigNumber],
-  { from: string; bombAmount: BigNumber; bondAmount: BigNumber }
+  { from: string; jiraAmount: BigNumber; bondAmount: BigNumber }
 >;
 
 export type BoughtBondsEventFilter = TypedEventFilter<BoughtBondsEvent>;
@@ -661,7 +661,7 @@ export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export type RedeemedBondsEvent = TypedEvent<
   [string, BigNumber, BigNumber],
-  { from: string; bombAmount: BigNumber; bondAmount: BigNumber }
+  { from: string; jiraAmount: BigNumber; bondAmount: BigNumber }
 >;
 
 export type RedeemedBondsEventFilter = TypedEventFilter<RedeemedBondsEvent>;
@@ -733,14 +733,6 @@ export interface Treasury extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    bomb(overrides?: CallOverrides): Promise<[string]>;
-
-    bombOracle(overrides?: CallOverrides): Promise<[string]>;
-
-    bombPriceCeiling(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    bombPriceOne(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     bondDepletionFloorPercent(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     bootstrapEpochs(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -752,7 +744,7 @@ export interface Treasury extends BaseContract {
     bshare(overrides?: CallOverrides): Promise<[string]>;
 
     buyBonds(
-      _bombAmount: BigNumberish,
+      _jiraAmount: BigNumberish,
       targetPrice: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -776,16 +768,6 @@ export interface Treasury extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getBombCirculatingSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getBombPrice(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { bombPrice: BigNumber }>;
-
-    getBombUpdatedPrice(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { _bombPrice: BigNumber }>;
-
     getBondDiscountRate(
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { _rate: BigNumber }>;
@@ -794,9 +776,19 @@ export interface Treasury extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { _rate: BigNumber }>;
 
-    getBurnableBombLeft(
+    getBurnableJiraLeft(
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { _burnableBombLeft: BigNumber }>;
+    ): Promise<[BigNumber] & { _burnableJiraLeft: BigNumber }>;
+
+    getJiraCirculatingSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getJiraPrice(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { jiraPrice: BigNumber }>;
+
+    getJiraUpdatedPrice(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { _jiraPrice: BigNumber }>;
 
     getRedeemableBonds(
       overrides?: CallOverrides
@@ -812,10 +804,10 @@ export interface Treasury extends BaseContract {
     ): Promise<ContractTransaction>;
 
     initialize(
-      _bomb: string,
+      _jira: string,
       _bbond: string,
       _bshare: string,
-      _bombOracle: string,
+      _jiraOracle: string,
       _boardroom: string,
       _startTime: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -824,6 +816,14 @@ export interface Treasury extends BaseContract {
     initialized(overrides?: CallOverrides): Promise<[boolean]>;
 
     isInitialized(overrides?: CallOverrides): Promise<[boolean]>;
+
+    jira(overrides?: CallOverrides): Promise<[string]>;
+
+    jiraOracle(overrides?: CallOverrides): Promise<[string]>;
+
+    jiraPriceCeiling(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    jiraPriceOne(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxDebtRatioPercent(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -852,7 +852,7 @@ export interface Treasury extends BaseContract {
 
     premiumThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    previousEpochBombPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+    previousEpochJiraPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     redeemBonds(
       _bondAmount: BigNumberish,
@@ -868,16 +868,6 @@ export interface Treasury extends BaseContract {
 
     setBoardroom(
       _boardroom: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setBombOracle(
-      _bombOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setBombPriceCeiling(
-      _bombPriceCeiling: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -902,6 +892,16 @@ export interface Treasury extends BaseContract {
       _daoFundSharedPercent: BigNumberish,
       _devFund: string,
       _devFundSharedPercent: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setJiraOracle(
+      _jiraOracle: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setJiraPriceCeiling(
+      _jiraPriceCeiling: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1003,14 +1003,6 @@ export interface Treasury extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  bomb(overrides?: CallOverrides): Promise<string>;
-
-  bombOracle(overrides?: CallOverrides): Promise<string>;
-
-  bombPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
-
-  bombPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
-
   bondDepletionFloorPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
   bootstrapEpochs(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1022,7 +1014,7 @@ export interface Treasury extends BaseContract {
   bshare(overrides?: CallOverrides): Promise<string>;
 
   buyBonds(
-    _bombAmount: BigNumberish,
+    _jiraAmount: BigNumberish,
     targetPrice: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1046,17 +1038,17 @@ export interface Treasury extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getBombCirculatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getBombUpdatedPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
   getBondDiscountRate(overrides?: CallOverrides): Promise<BigNumber>;
 
   getBondPremiumRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getBurnableBombLeft(overrides?: CallOverrides): Promise<BigNumber>;
+  getBurnableJiraLeft(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getJiraCirculatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getJiraUpdatedPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   getRedeemableBonds(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1070,10 +1062,10 @@ export interface Treasury extends BaseContract {
   ): Promise<ContractTransaction>;
 
   initialize(
-    _bomb: string,
+    _jira: string,
     _bbond: string,
     _bshare: string,
-    _bombOracle: string,
+    _jiraOracle: string,
     _boardroom: string,
     _startTime: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1082,6 +1074,14 @@ export interface Treasury extends BaseContract {
   initialized(overrides?: CallOverrides): Promise<boolean>;
 
   isInitialized(overrides?: CallOverrides): Promise<boolean>;
+
+  jira(overrides?: CallOverrides): Promise<string>;
+
+  jiraOracle(overrides?: CallOverrides): Promise<string>;
+
+  jiraPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
+
+  jiraPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
 
   maxDebtRatioPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1108,7 +1108,7 @@ export interface Treasury extends BaseContract {
 
   premiumThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-  previousEpochBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
+  previousEpochJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   redeemBonds(
     _bondAmount: BigNumberish,
@@ -1124,16 +1124,6 @@ export interface Treasury extends BaseContract {
 
   setBoardroom(
     _boardroom: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setBombOracle(
-    _bombOracle: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setBombPriceCeiling(
-    _bombPriceCeiling: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1158,6 +1148,16 @@ export interface Treasury extends BaseContract {
     _daoFundSharedPercent: BigNumberish,
     _devFund: string,
     _devFundSharedPercent: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setJiraOracle(
+    _jiraOracle: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setJiraPriceCeiling(
+    _jiraPriceCeiling: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1257,14 +1257,6 @@ export interface Treasury extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    bomb(overrides?: CallOverrides): Promise<string>;
-
-    bombOracle(overrides?: CallOverrides): Promise<string>;
-
-    bombPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
-
-    bombPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
-
     bondDepletionFloorPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
     bootstrapEpochs(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1276,7 +1268,7 @@ export interface Treasury extends BaseContract {
     bshare(overrides?: CallOverrides): Promise<string>;
 
     buyBonds(
-      _bombAmount: BigNumberish,
+      _jiraAmount: BigNumberish,
       targetPrice: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1300,17 +1292,17 @@ export interface Treasury extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getBombCirculatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getBombUpdatedPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
     getBondDiscountRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     getBondPremiumRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getBurnableBombLeft(overrides?: CallOverrides): Promise<BigNumber>;
+    getBurnableJiraLeft(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getJiraCirculatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getJiraUpdatedPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     getRedeemableBonds(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1324,10 +1316,10 @@ export interface Treasury extends BaseContract {
     ): Promise<void>;
 
     initialize(
-      _bomb: string,
+      _jira: string,
       _bbond: string,
       _bshare: string,
-      _bombOracle: string,
+      _jiraOracle: string,
       _boardroom: string,
       _startTime: BigNumberish,
       overrides?: CallOverrides
@@ -1336,6 +1328,14 @@ export interface Treasury extends BaseContract {
     initialized(overrides?: CallOverrides): Promise<boolean>;
 
     isInitialized(overrides?: CallOverrides): Promise<boolean>;
+
+    jira(overrides?: CallOverrides): Promise<string>;
+
+    jiraOracle(overrides?: CallOverrides): Promise<string>;
+
+    jiraPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jiraPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxDebtRatioPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1362,7 +1362,7 @@ export interface Treasury extends BaseContract {
 
     premiumThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    previousEpochBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    previousEpochJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeemBonds(
       _bondAmount: BigNumberish,
@@ -1377,16 +1377,6 @@ export interface Treasury extends BaseContract {
     seigniorageSaved(overrides?: CallOverrides): Promise<BigNumber>;
 
     setBoardroom(_boardroom: string, overrides?: CallOverrides): Promise<void>;
-
-    setBombOracle(
-      _bombOracle: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setBombPriceCeiling(
-      _bombPriceCeiling: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     setBondDepletionFloorPercent(
       _bondDepletionFloorPercent: BigNumberish,
@@ -1409,6 +1399,16 @@ export interface Treasury extends BaseContract {
       _daoFundSharedPercent: BigNumberish,
       _devFund: string,
       _devFundSharedPercent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setJiraOracle(
+      _jiraOracle: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setJiraPriceCeiling(
+      _jiraPriceCeiling: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1486,12 +1486,12 @@ export interface Treasury extends BaseContract {
 
     "BoughtBonds(address,uint256,uint256)"(
       from?: string | null,
-      bombAmount?: null,
+      jiraAmount?: null,
       bondAmount?: null
     ): BoughtBondsEventFilter;
     BoughtBonds(
       from?: string | null,
-      bombAmount?: null,
+      jiraAmount?: null,
       bondAmount?: null
     ): BoughtBondsEventFilter;
 
@@ -1530,12 +1530,12 @@ export interface Treasury extends BaseContract {
 
     "RedeemedBonds(address,uint256,uint256)"(
       from?: string | null,
-      bombAmount?: null,
+      jiraAmount?: null,
       bondAmount?: null
     ): RedeemedBondsEventFilter;
     RedeemedBonds(
       from?: string | null,
-      bombAmount?: null,
+      jiraAmount?: null,
       bondAmount?: null
     ): RedeemedBondsEventFilter;
 
@@ -1583,14 +1583,6 @@ export interface Treasury extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    bomb(overrides?: CallOverrides): Promise<BigNumber>;
-
-    bombOracle(overrides?: CallOverrides): Promise<BigNumber>;
-
-    bombPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
-
-    bombPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
-
     bondDepletionFloorPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
     bootstrapEpochs(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1602,7 +1594,7 @@ export interface Treasury extends BaseContract {
     bshare(overrides?: CallOverrides): Promise<BigNumber>;
 
     buyBonds(
-      _bombAmount: BigNumberish,
+      _jiraAmount: BigNumberish,
       targetPrice: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1626,17 +1618,17 @@ export interface Treasury extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getBombCirculatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getBombUpdatedPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
     getBondDiscountRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     getBondPremiumRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getBurnableBombLeft(overrides?: CallOverrides): Promise<BigNumber>;
+    getBurnableJiraLeft(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getJiraCirculatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getJiraUpdatedPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     getRedeemableBonds(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1650,10 +1642,10 @@ export interface Treasury extends BaseContract {
     ): Promise<BigNumber>;
 
     initialize(
-      _bomb: string,
+      _jira: string,
       _bbond: string,
       _bshare: string,
-      _bombOracle: string,
+      _jiraOracle: string,
       _boardroom: string,
       _startTime: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1662,6 +1654,14 @@ export interface Treasury extends BaseContract {
     initialized(overrides?: CallOverrides): Promise<BigNumber>;
 
     isInitialized(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jira(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jiraOracle(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jiraPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jiraPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxDebtRatioPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1688,7 +1688,7 @@ export interface Treasury extends BaseContract {
 
     premiumThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    previousEpochBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    previousEpochJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeemBonds(
       _bondAmount: BigNumberish,
@@ -1704,16 +1704,6 @@ export interface Treasury extends BaseContract {
 
     setBoardroom(
       _boardroom: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setBombOracle(
-      _bombOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setBombPriceCeiling(
-      _bombPriceCeiling: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1738,6 +1728,16 @@ export interface Treasury extends BaseContract {
       _daoFundSharedPercent: BigNumberish,
       _devFund: string,
       _devFundSharedPercent: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setJiraOracle(
+      _jiraOracle: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setJiraPriceCeiling(
+      _jiraPriceCeiling: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1840,14 +1840,6 @@ export interface Treasury extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    bomb(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    bombOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    bombPriceCeiling(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    bombPriceOne(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     bondDepletionFloorPercent(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1861,7 +1853,7 @@ export interface Treasury extends BaseContract {
     bshare(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     buyBonds(
-      _bombAmount: BigNumberish,
+      _jiraAmount: BigNumberish,
       targetPrice: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1891,16 +1883,6 @@ export interface Treasury extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getBombCirculatingSupply(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getBombPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getBombUpdatedPrice(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getBondDiscountRate(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1909,7 +1891,17 @@ export interface Treasury extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getBurnableBombLeft(
+    getBurnableJiraLeft(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getJiraCirculatingSupply(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getJiraPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getJiraUpdatedPrice(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1927,10 +1919,10 @@ export interface Treasury extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      _bomb: string,
+      _jira: string,
       _bbond: string,
       _bshare: string,
-      _bombOracle: string,
+      _jiraOracle: string,
       _boardroom: string,
       _startTime: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1939,6 +1931,14 @@ export interface Treasury extends BaseContract {
     initialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isInitialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jira(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jiraOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jiraPriceCeiling(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jiraPriceOne(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     maxDebtRatioPercent(
       overrides?: CallOverrides
@@ -1973,7 +1973,7 @@ export interface Treasury extends BaseContract {
 
     premiumThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    previousEpochBombPrice(
+    previousEpochJiraPrice(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1991,16 +1991,6 @@ export interface Treasury extends BaseContract {
 
     setBoardroom(
       _boardroom: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setBombOracle(
-      _bombOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setBombPriceCeiling(
-      _bombPriceCeiling: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2025,6 +2015,16 @@ export interface Treasury extends BaseContract {
       _daoFundSharedPercent: BigNumberish,
       _devFund: string,
       _devFundSharedPercent: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setJiraOracle(
+      _jiraOracle: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setJiraPriceCeiling(
+      _jiraPriceCeiling: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

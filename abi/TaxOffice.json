@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_bomb",
+        "name": "_jira",
         "type": "address"
       }
     ],
@@ -47,19 +47,6 @@
     ],
     "name": "OwnershipTransferred",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "bomb",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -121,6 +108,19 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jira",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -250,11 +250,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_bombOracle",
+        "name": "_jiraOracle",
         "type": "address"
       }
     ],
-    "name": "setTaxableBombOracle",
+    "name": "setTaxableJiraOracle",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

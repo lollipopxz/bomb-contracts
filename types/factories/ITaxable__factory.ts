@@ -81,12 +81,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_bombOracle",
-        type: "address",
+        internalType: "uint256",
+        name: "_burnThreshold",
+        type: "uint256",
       },
     ],
-    name: "setBombOracle",
+    name: "setBurnThreshold",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -94,12 +94,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "_burnThreshold",
-        type: "uint256",
+        internalType: "address",
+        name: "_jiraOracle",
+        type: "address",
       },
     ],
-    name: "setBurnThreshold",
+    name: "setJiraOracle",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

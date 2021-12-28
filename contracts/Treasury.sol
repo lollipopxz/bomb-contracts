@@ -259,7 +259,7 @@ contract Treasury is ContractGuard {
         boardroom = _boardroom;
         startTime = _startTime;
 
-        jiraPriceOne = 10**14; // This is to allow a PEG of 10,000 JIRA per BTC
+        jiraPriceOne = 10**18; // This is to allow a PEG of 10,000 JIRA per BTC
         jiraPriceCeiling = jiraPriceOne.mul(101).div(100);
 
         // Dynamic max expansion percent

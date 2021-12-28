@@ -22,12 +22,12 @@ export interface TaxOfficeV2Interface extends utils.Interface {
   functions: {
     "addLiquidityETHTaxFree(uint256,uint256,uint256)": FunctionFragment;
     "addLiquidityTaxFree(address,uint256,uint256,uint256,uint256)": FunctionFragment;
-    "bomb()": FunctionFragment;
     "disableAutoCalculateTax()": FunctionFragment;
     "enableAutoCalculateTax()": FunctionFragment;
     "excludeAddressFromTax(address)": FunctionFragment;
     "includeAddressInTax(address)": FunctionFragment;
     "isOperator()": FunctionFragment;
+    "jira()": FunctionFragment;
     "operator()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -37,7 +37,7 @@ export interface TaxOfficeV2Interface extends utils.Interface {
     "setTaxRate(uint256)": FunctionFragment;
     "setTaxTiersRate(uint8,uint256)": FunctionFragment;
     "setTaxTiersTwap(uint8,uint256)": FunctionFragment;
-    "setTaxableBombOracle(address)": FunctionFragment;
+    "setTaxableJiraOracle(address)": FunctionFragment;
     "taxExclusionEnabled(address)": FunctionFragment;
     "taxFreeTransferFrom(address,address,uint256)": FunctionFragment;
     "taxRate()": FunctionFragment;
@@ -56,7 +56,6 @@ export interface TaxOfficeV2Interface extends utils.Interface {
     functionFragment: "addLiquidityTaxFree",
     values: [string, BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "bomb", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "disableAutoCalculateTax",
     values?: undefined
@@ -77,6 +76,7 @@ export interface TaxOfficeV2Interface extends utils.Interface {
     functionFragment: "isOperator",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "jira", values?: undefined): string;
   encodeFunctionData(functionFragment: "operator", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -108,7 +108,7 @@ export interface TaxOfficeV2Interface extends utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setTaxableBombOracle",
+    functionFragment: "setTaxableJiraOracle",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -143,7 +143,6 @@ export interface TaxOfficeV2Interface extends utils.Interface {
     functionFragment: "addLiquidityTaxFree",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "bomb", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "disableAutoCalculateTax",
     data: BytesLike
@@ -161,6 +160,7 @@ export interface TaxOfficeV2Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isOperator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "jira", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "operator", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
@@ -189,7 +189,7 @@ export interface TaxOfficeV2Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setTaxableBombOracle",
+    functionFragment: "setTaxableJiraOracle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -269,22 +269,20 @@ export interface TaxOfficeV2 extends BaseContract {
 
   functions: {
     addLiquidityETHTaxFree(
-      amtBomb: BigNumberish,
-      amtBombMin: BigNumberish,
+      amtJira: BigNumberish,
+      amtJiraMin: BigNumberish,
       amtEthMin: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     addLiquidityTaxFree(
       token: string,
-      amtBomb: BigNumberish,
+      amtJira: BigNumberish,
       amtToken: BigNumberish,
-      amtBombMin: BigNumberish,
+      amtJiraMin: BigNumberish,
       amtTokenMin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    bomb(overrides?: CallOverrides): Promise<[string]>;
 
     disableAutoCalculateTax(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -305,6 +303,8 @@ export interface TaxOfficeV2 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     isOperator(overrides?: CallOverrides): Promise<[boolean]>;
+
+    jira(overrides?: CallOverrides): Promise<[string]>;
 
     operator(overrides?: CallOverrides): Promise<[string]>;
 
@@ -347,8 +347,8 @@ export interface TaxOfficeV2 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setTaxableBombOracle(
-      _bombOracle: string,
+    setTaxableJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -389,22 +389,20 @@ export interface TaxOfficeV2 extends BaseContract {
   };
 
   addLiquidityETHTaxFree(
-    amtBomb: BigNumberish,
-    amtBombMin: BigNumberish,
+    amtJira: BigNumberish,
+    amtJiraMin: BigNumberish,
     amtEthMin: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   addLiquidityTaxFree(
     token: string,
-    amtBomb: BigNumberish,
+    amtJira: BigNumberish,
     amtToken: BigNumberish,
-    amtBombMin: BigNumberish,
+    amtJiraMin: BigNumberish,
     amtTokenMin: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  bomb(overrides?: CallOverrides): Promise<string>;
 
   disableAutoCalculateTax(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -425,6 +423,8 @@ export interface TaxOfficeV2 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   isOperator(overrides?: CallOverrides): Promise<boolean>;
+
+  jira(overrides?: CallOverrides): Promise<string>;
 
   operator(overrides?: CallOverrides): Promise<string>;
 
@@ -467,8 +467,8 @@ export interface TaxOfficeV2 extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setTaxableBombOracle(
-    _bombOracle: string,
+  setTaxableJiraOracle(
+    _jiraOracle: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -509,22 +509,20 @@ export interface TaxOfficeV2 extends BaseContract {
 
   callStatic: {
     addLiquidityETHTaxFree(
-      amtBomb: BigNumberish,
-      amtBombMin: BigNumberish,
+      amtJira: BigNumberish,
+      amtJiraMin: BigNumberish,
       amtEthMin: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber, BigNumber, BigNumber]>;
 
     addLiquidityTaxFree(
       token: string,
-      amtBomb: BigNumberish,
+      amtJira: BigNumberish,
       amtToken: BigNumberish,
-      amtBombMin: BigNumberish,
+      amtJiraMin: BigNumberish,
       amtTokenMin: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber, BigNumber, BigNumber]>;
-
-    bomb(overrides?: CallOverrides): Promise<string>;
 
     disableAutoCalculateTax(overrides?: CallOverrides): Promise<void>;
 
@@ -541,6 +539,8 @@ export interface TaxOfficeV2 extends BaseContract {
     ): Promise<boolean>;
 
     isOperator(overrides?: CallOverrides): Promise<boolean>;
+
+    jira(overrides?: CallOverrides): Promise<string>;
 
     operator(overrides?: CallOverrides): Promise<string>;
 
@@ -581,8 +581,8 @@ export interface TaxOfficeV2 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    setTaxableBombOracle(
-      _bombOracle: string,
+    setTaxableJiraOracle(
+      _jiraOracle: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -642,22 +642,20 @@ export interface TaxOfficeV2 extends BaseContract {
 
   estimateGas: {
     addLiquidityETHTaxFree(
-      amtBomb: BigNumberish,
-      amtBombMin: BigNumberish,
+      amtJira: BigNumberish,
+      amtJiraMin: BigNumberish,
       amtEthMin: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     addLiquidityTaxFree(
       token: string,
-      amtBomb: BigNumberish,
+      amtJira: BigNumberish,
       amtToken: BigNumberish,
-      amtBombMin: BigNumberish,
+      amtJiraMin: BigNumberish,
       amtTokenMin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    bomb(overrides?: CallOverrides): Promise<BigNumber>;
 
     disableAutoCalculateTax(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -678,6 +676,8 @@ export interface TaxOfficeV2 extends BaseContract {
     ): Promise<BigNumber>;
 
     isOperator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jira(overrides?: CallOverrides): Promise<BigNumber>;
 
     operator(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -720,8 +720,8 @@ export interface TaxOfficeV2 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setTaxableBombOracle(
-      _bombOracle: string,
+    setTaxableJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -763,22 +763,20 @@ export interface TaxOfficeV2 extends BaseContract {
 
   populateTransaction: {
     addLiquidityETHTaxFree(
-      amtBomb: BigNumberish,
-      amtBombMin: BigNumberish,
+      amtJira: BigNumberish,
+      amtJiraMin: BigNumberish,
       amtEthMin: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     addLiquidityTaxFree(
       token: string,
-      amtBomb: BigNumberish,
+      amtJira: BigNumberish,
       amtToken: BigNumberish,
-      amtBombMin: BigNumberish,
+      amtJiraMin: BigNumberish,
       amtTokenMin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    bomb(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     disableAutoCalculateTax(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -799,6 +797,8 @@ export interface TaxOfficeV2 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     isOperator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jira(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     operator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -841,8 +841,8 @@ export interface TaxOfficeV2 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setTaxableBombOracle(
-      _bombOracle: string,
+    setTaxableJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

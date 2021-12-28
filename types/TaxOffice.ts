@@ -19,12 +19,12 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface TaxOfficeInterface extends utils.Interface {
   functions: {
-    "bomb()": FunctionFragment;
     "disableAutoCalculateTax()": FunctionFragment;
     "enableAutoCalculateTax()": FunctionFragment;
     "excludeAddressFromTax(address)": FunctionFragment;
     "includeAddressInTax(address)": FunctionFragment;
     "isOperator()": FunctionFragment;
+    "jira()": FunctionFragment;
     "operator()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -33,13 +33,12 @@ export interface TaxOfficeInterface extends utils.Interface {
     "setTaxRate(uint256)": FunctionFragment;
     "setTaxTiersRate(uint8,uint256)": FunctionFragment;
     "setTaxTiersTwap(uint8,uint256)": FunctionFragment;
-    "setTaxableBombOracle(address)": FunctionFragment;
+    "setTaxableJiraOracle(address)": FunctionFragment;
     "transferOperator(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "transferTaxOffice(address)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "bomb", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "disableAutoCalculateTax",
     values?: undefined
@@ -60,6 +59,7 @@ export interface TaxOfficeInterface extends utils.Interface {
     functionFragment: "isOperator",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "jira", values?: undefined): string;
   encodeFunctionData(functionFragment: "operator", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -87,7 +87,7 @@ export interface TaxOfficeInterface extends utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setTaxableBombOracle",
+    functionFragment: "setTaxableJiraOracle",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -103,7 +103,6 @@ export interface TaxOfficeInterface extends utils.Interface {
     values: [string]
   ): string;
 
-  decodeFunctionResult(functionFragment: "bomb", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "disableAutoCalculateTax",
     data: BytesLike
@@ -121,6 +120,7 @@ export interface TaxOfficeInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isOperator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "jira", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "operator", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
@@ -145,7 +145,7 @@ export interface TaxOfficeInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setTaxableBombOracle",
+    functionFragment: "setTaxableJiraOracle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -213,8 +213,6 @@ export interface TaxOffice extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    bomb(overrides?: CallOverrides): Promise<[string]>;
-
     disableAutoCalculateTax(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -234,6 +232,8 @@ export interface TaxOffice extends BaseContract {
     ): Promise<ContractTransaction>;
 
     isOperator(overrides?: CallOverrides): Promise<[boolean]>;
+
+    jira(overrides?: CallOverrides): Promise<[string]>;
 
     operator(overrides?: CallOverrides): Promise<[string]>;
 
@@ -270,8 +270,8 @@ export interface TaxOffice extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setTaxableBombOracle(
-      _bombOracle: string,
+    setTaxableJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -290,8 +290,6 @@ export interface TaxOffice extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
-
-  bomb(overrides?: CallOverrides): Promise<string>;
 
   disableAutoCalculateTax(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -312,6 +310,8 @@ export interface TaxOffice extends BaseContract {
   ): Promise<ContractTransaction>;
 
   isOperator(overrides?: CallOverrides): Promise<boolean>;
+
+  jira(overrides?: CallOverrides): Promise<string>;
 
   operator(overrides?: CallOverrides): Promise<string>;
 
@@ -348,8 +348,8 @@ export interface TaxOffice extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setTaxableBombOracle(
-    _bombOracle: string,
+  setTaxableJiraOracle(
+    _jiraOracle: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -369,8 +369,6 @@ export interface TaxOffice extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    bomb(overrides?: CallOverrides): Promise<string>;
-
     disableAutoCalculateTax(overrides?: CallOverrides): Promise<void>;
 
     enableAutoCalculateTax(overrides?: CallOverrides): Promise<void>;
@@ -386,6 +384,8 @@ export interface TaxOffice extends BaseContract {
     ): Promise<boolean>;
 
     isOperator(overrides?: CallOverrides): Promise<boolean>;
+
+    jira(overrides?: CallOverrides): Promise<string>;
 
     operator(overrides?: CallOverrides): Promise<string>;
 
@@ -420,8 +420,8 @@ export interface TaxOffice extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    setTaxableBombOracle(
-      _bombOracle: string,
+    setTaxableJiraOracle(
+      _jiraOracle: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -462,8 +462,6 @@ export interface TaxOffice extends BaseContract {
   };
 
   estimateGas: {
-    bomb(overrides?: CallOverrides): Promise<BigNumber>;
-
     disableAutoCalculateTax(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -483,6 +481,8 @@ export interface TaxOffice extends BaseContract {
     ): Promise<BigNumber>;
 
     isOperator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jira(overrides?: CallOverrides): Promise<BigNumber>;
 
     operator(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -519,8 +519,8 @@ export interface TaxOffice extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setTaxableBombOracle(
-      _bombOracle: string,
+    setTaxableJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -541,8 +541,6 @@ export interface TaxOffice extends BaseContract {
   };
 
   populateTransaction: {
-    bomb(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     disableAutoCalculateTax(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -562,6 +560,8 @@ export interface TaxOffice extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     isOperator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jira(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     operator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -598,8 +598,8 @@ export interface TaxOffice extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setTaxableBombOracle(
-      _bombOracle: string,
+    setTaxableJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

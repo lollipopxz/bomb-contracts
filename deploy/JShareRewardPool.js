@@ -7,15 +7,15 @@ module.exports = async function ({
 
     const { deployer, dev } = await getNamedAccounts();
 
-    const bshare = await ethers.getContract("BShare");
+    const jshare = await ethers.getContract("JShare");
 
-    await deploy("BShareRewardPool", {
+    await deploy("JShareRewardPool", {
         from: deployer,
-        args: [bshare.address, 1637881200], // 6 days after genesis
+        args: [jshare.address, 1637881200], // 6 days after genesis
         log: true,
         deterministicDeployment: false,
     });
 };
 
-module.exports.tags = ["BShareRewardPool"];
-// module.exports.dependencies = ["BShare"];
+module.exports.tags = ["JShareRewardPool"];
+// module.exports.dependencies = ["JShare"];

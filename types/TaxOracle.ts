@@ -19,70 +19,70 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface TaxOracleInterface extends utils.Interface {
   functions: {
-    "bomb()": FunctionFragment;
     "btcb()": FunctionFragment;
     "consult(address,uint256)": FunctionFragment;
-    "getBombBalance()": FunctionFragment;
     "getBtcbBalance()": FunctionFragment;
+    "getJiraBalance()": FunctionFragment;
     "getPrice()": FunctionFragment;
+    "jira()": FunctionFragment;
     "owner()": FunctionFragment;
     "pair()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "setBomb(address)": FunctionFragment;
     "setBtcb(address)": FunctionFragment;
+    "setJira(address)": FunctionFragment;
     "setPair(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "bomb", values?: undefined): string;
   encodeFunctionData(functionFragment: "btcb", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "consult",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBombBalance",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getBtcbBalance",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "getJiraBalance",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "getPrice", values?: undefined): string;
+  encodeFunctionData(functionFragment: "jira", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "pair", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "setBomb", values: [string]): string;
   encodeFunctionData(functionFragment: "setBtcb", values: [string]): string;
+  encodeFunctionData(functionFragment: "setJira", values: [string]): string;
   encodeFunctionData(functionFragment: "setPair", values: [string]): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
 
-  decodeFunctionResult(functionFragment: "bomb", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "btcb", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "consult", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getBombBalance",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "getBtcbBalance",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getJiraBalance",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getPrice", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "jira", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pair", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setBomb", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setBtcb", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setJira", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setPair", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
@@ -131,8 +131,6 @@ export interface TaxOracle extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    bomb(overrides?: CallOverrides): Promise<[string]>;
-
     btcb(overrides?: CallOverrides): Promise<[string]>;
 
     consult(
@@ -141,11 +139,13 @@ export interface TaxOracle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amountOut: BigNumber }>;
 
-    getBombBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     getBtcbBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    getJiraBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    jira(overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -155,13 +155,13 @@ export interface TaxOracle extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setBomb(
-      _bomb: string,
+    setBtcb(
+      _btcb: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setBtcb(
-      _btcb: string,
+    setJira(
+      _jira: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -176,8 +176,6 @@ export interface TaxOracle extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  bomb(overrides?: CallOverrides): Promise<string>;
-
   btcb(overrides?: CallOverrides): Promise<string>;
 
   consult(
@@ -186,11 +184,13 @@ export interface TaxOracle extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getBombBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
   getBtcbBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
+  getJiraBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
   getPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+  jira(overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -200,13 +200,13 @@ export interface TaxOracle extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setBomb(
-    _bomb: string,
+  setBtcb(
+    _btcb: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setBtcb(
-    _btcb: string,
+  setJira(
+    _jira: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -221,8 +221,6 @@ export interface TaxOracle extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    bomb(overrides?: CallOverrides): Promise<string>;
-
     btcb(overrides?: CallOverrides): Promise<string>;
 
     consult(
@@ -231,11 +229,13 @@ export interface TaxOracle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getBombBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
     getBtcbBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getJiraBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
     getPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jira(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -243,9 +243,9 @@ export interface TaxOracle extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    setBomb(_bomb: string, overrides?: CallOverrides): Promise<void>;
-
     setBtcb(_btcb: string, overrides?: CallOverrides): Promise<void>;
+
+    setJira(_jira: string, overrides?: CallOverrides): Promise<void>;
 
     setPair(_pair: string, overrides?: CallOverrides): Promise<void>;
 
@@ -267,8 +267,6 @@ export interface TaxOracle extends BaseContract {
   };
 
   estimateGas: {
-    bomb(overrides?: CallOverrides): Promise<BigNumber>;
-
     btcb(overrides?: CallOverrides): Promise<BigNumber>;
 
     consult(
@@ -277,11 +275,13 @@ export interface TaxOracle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getBombBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
     getBtcbBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getJiraBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
     getPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jira(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -291,13 +291,13 @@ export interface TaxOracle extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setBomb(
-      _bomb: string,
+    setBtcb(
+      _btcb: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setBtcb(
-      _btcb: string,
+    setJira(
+      _jira: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -313,8 +313,6 @@ export interface TaxOracle extends BaseContract {
   };
 
   populateTransaction: {
-    bomb(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     btcb(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     consult(
@@ -323,11 +321,13 @@ export interface TaxOracle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getBombBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getBtcbBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getJiraBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jira(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -337,13 +337,13 @@ export interface TaxOracle extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setBomb(
-      _bomb: string,
+    setBtcb(
+      _btcb: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setBtcb(
-      _btcb: string,
+    setJira(
+      _jira: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

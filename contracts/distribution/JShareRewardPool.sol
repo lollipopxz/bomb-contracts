@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 
 // Note that this pool has no minter key of tSHARE (rewards).
 // Instead, the governance will call tSHARE distributeReward method and send reward to this pool at the beginning.
-contract BShareRewardPool {
+contract JShareRewardPool {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -26,11 +26,11 @@ contract BShareRewardPool {
         IERC20 token; // Address of LP token contract.
         uint256 allocPoint; // How many allocation points assigned to this pool. tSHAREs to distribute per block.
         uint256 lastRewardTime; // Last time that tSHAREs distribution occurs.
-        uint256 accBSharePerShare; // Accumulated tSHAREs per share, times 1e18. See below.
+        uint256 accJSharePerShare; // Accumulated tSHAREs per share, times 1e18. See below.
         bool isStarted; // if lastRewardTime has passed
     }
 
-    IERC20 public bshare;
+    IERC20 public jshare;
 
     // Info of each pool.
     PoolInfo[] public poolInfo;
@@ -47,7 +47,7 @@ contract BShareRewardPool {
     // The time when tSHARE mining ends.
     uint256 public poolEndTime;
 
-    uint256 public tSharePerSecond = 0.00186122 ether; // 59500 bshare / (370 days * 24h * 60min * 60s)
+    uint256 public tSharePerSecond = 0.00186122 ether; // 59500 jshare / (370 days * 24h * 60min * 60s)
     uint256 public runningTime = 370 days; // 370 days
     uint256 public constant TOTAL_REWARDS = 59500 ether;
 
@@ -57,25 +57,25 @@ contract BShareRewardPool {
     event RewardPaid(address indexed user, uint256 amount);
 
     constructor(
-        address _bshare,
+        address _jshare,
         uint256 _poolStartTime
     ) public {
         require(block.timestamp < _poolStartTime, "late");
-        if (_bshare != address(0)) bshare = IERC20(_bshare);
+        if (_jshare != address(0)) jshare = IERC20(_jshare);
         poolStartTime = _poolStartTime;
         poolEndTime = poolStartTime + runningTime;
         operator = msg.sender;
     }
 
     modifier onlyOperator() {
-        require(operator == msg.sender, "BShareRewardPool: caller is not the operator");
+        require(operator == msg.sender, "JShareRewardPool: caller is not the operator");
         _;
     }
 
     function checkPoolDuplicate(IERC20 _token) internal view {
         uint256 length = poolInfo.length;
         for (uint256 pid = 0; pid < length; ++pid) {
-            require(poolInfo[pid].token != _token, "BShareRewardPool: existing pool?");
+            require(poolInfo[pid].token != _token, "JShareRewardPool: existing pool?");
         }
     }
 
@@ -112,7 +112,7 @@ contract BShareRewardPool {
             token : _token,
             allocPoint : _allocPoint,
             lastRewardTime : _lastRewardTime,
-            accBSharePerShare : 0,
+            accJSharePerShare : 0,
             isStarted : _isStarted
             }));
         if (_isStarted) {
@@ -150,14 +150,14 @@ contract BShareRewardPool {
     function pendingShare(uint256 _pid, address _user) external view returns (uint256) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][_user];
-        uint256 accBSharePerShare = pool.accBSharePerShare;
+        uint256 accJSharePerShare = pool.accJSharePerShare;
         uint256 tokenSupply = pool.token.balanceOf(address(this));
         if (block.timestamp > pool.lastRewardTime && tokenSupply != 0) {
             uint256 _generatedReward = getGeneratedReward(pool.lastRewardTime, block.timestamp);
-            uint256 _bshareReward = _generatedReward.mul(pool.allocPoint).div(totalAllocPoint);
-            accBSharePerShare = accBSharePerShare.add(_bshareReward.mul(1e18).div(tokenSupply));
+            uint256 _jshareReward = _generatedReward.mul(pool.allocPoint).div(totalAllocPoint);
+            accJSharePerShare = accJSharePerShare.add(_jshareReward.mul(1e18).div(tokenSupply));
         }
-        return user.amount.mul(accBSharePerShare).div(1e18).sub(user.rewardDebt);
+        return user.amount.mul(accJSharePerShare).div(1e18).sub(user.rewardDebt);
     }
 
     // Update reward variables for all pools. Be careful of gas spending!
@@ -185,8 +185,8 @@ contract BShareRewardPool {
         }
         if (totalAllocPoint > 0) {
             uint256 _generatedReward = getGeneratedReward(pool.lastRewardTime, block.timestamp);
-            uint256 _bshareReward = _generatedReward.mul(pool.allocPoint).div(totalAllocPoint);
-            pool.accBSharePerShare = pool.accBSharePerShare.add(_bshareReward.mul(1e18).div(tokenSupply));
+            uint256 _jshareReward = _generatedReward.mul(pool.allocPoint).div(totalAllocPoint);
+            pool.accJSharePerShare = pool.accJSharePerShare.add(_jshareReward.mul(1e18).div(tokenSupply));
         }
         pool.lastRewardTime = block.timestamp;
     }
@@ -198,9 +198,9 @@ contract BShareRewardPool {
         UserInfo storage user = userInfo[_pid][_sender];
         updatePool(_pid);
         if (user.amount > 0) {
-            uint256 _pending = user.amount.mul(pool.accBSharePerShare).div(1e18).sub(user.rewardDebt);
+            uint256 _pending = user.amount.mul(pool.accJSharePerShare).div(1e18).sub(user.rewardDebt);
             if (_pending > 0) {
-                safeBShareTransfer(_sender, _pending);
+                safeJShareTransfer(_sender, _pending);
                 emit RewardPaid(_sender, _pending);
             }
         }
@@ -208,7 +208,7 @@ contract BShareRewardPool {
             pool.token.safeTransferFrom(_sender, address(this), _amount);
             user.amount = user.amount.add(_amount);
         }
-        user.rewardDebt = user.amount.mul(pool.accBSharePerShare).div(1e18);
+        user.rewardDebt = user.amount.mul(pool.accJSharePerShare).div(1e18);
         emit Deposit(_sender, _pid, _amount);
     }
 
@@ -219,16 +219,16 @@ contract BShareRewardPool {
         UserInfo storage user = userInfo[_pid][_sender];
         require(user.amount >= _amount, "withdraw: not good");
         updatePool(_pid);
-        uint256 _pending = user.amount.mul(pool.accBSharePerShare).div(1e18).sub(user.rewardDebt);
+        uint256 _pending = user.amount.mul(pool.accJSharePerShare).div(1e18).sub(user.rewardDebt);
         if (_pending > 0) {
-            safeBShareTransfer(_sender, _pending);
+            safeJShareTransfer(_sender, _pending);
             emit RewardPaid(_sender, _pending);
         }
         if (_amount > 0) {
             user.amount = user.amount.sub(_amount);
             pool.token.safeTransfer(_sender, _amount);
         }
-        user.rewardDebt = user.amount.mul(pool.accBSharePerShare).div(1e18);
+        user.rewardDebt = user.amount.mul(pool.accJSharePerShare).div(1e18);
         emit Withdraw(_sender, _pid, _amount);
     }
 
@@ -243,14 +243,14 @@ contract BShareRewardPool {
         emit EmergencyWithdraw(msg.sender, _pid, _amount);
     }
 
-    // Safe bshare transfer function, just in case if rounding error causes pool to not have enough tSHAREs.
-    function safeBShareTransfer(address _to, uint256 _amount) internal {
-        uint256 _bshareBal = bshare.balanceOf(address(this));
-        if (_bshareBal > 0) {
-            if (_amount > _bshareBal) {
-                bshare.safeTransfer(_to, _bshareBal);
+    // Safe jshare transfer function, just in case if rounding error causes pool to not have enough tSHAREs.
+    function safeJShareTransfer(address _to, uint256 _amount) internal {
+        uint256 _jshareBal = jshare.balanceOf(address(this));
+        if (_jshareBal > 0) {
+            if (_amount > _jshareBal) {
+                jshare.safeTransfer(_to, _jshareBal);
             } else {
-                bshare.safeTransfer(_to, _amount);
+                jshare.safeTransfer(_to, _amount);
             }
         }
     }
@@ -262,7 +262,7 @@ contract BShareRewardPool {
     function governanceRecoverUnsupported(IERC20 _token, uint256 amount, address to) external onlyOperator {
         if (block.timestamp < poolEndTime + 90 days) {
             // do not allow to drain core token (tSHARE or lps) if less than 90 days after pool ends
-            require(_token != bshare, "bshare");
+            require(_token != jshare, "jshare");
             uint256 length = poolInfo.length;
             for (uint256 pid = 0; pid < length; ++pid) {
                 PoolInfo storage pool = poolInfo[pid];

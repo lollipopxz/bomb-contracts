@@ -24,8 +24,8 @@ export interface ITaxableInterface extends utils.Interface {
     "excludeAddress(address)": FunctionFragment;
     "includeAddress(address)": FunctionFragment;
     "isAddressExcluded(address)": FunctionFragment;
-    "setBombOracle(address)": FunctionFragment;
     "setBurnThreshold(uint256)": FunctionFragment;
+    "setJiraOracle(address)": FunctionFragment;
     "setTaxCollectorAddress(address)": FunctionFragment;
     "setTaxOffice(address)": FunctionFragment;
     "setTaxRate(uint256)": FunctionFragment;
@@ -55,12 +55,12 @@ export interface ITaxableInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "setBombOracle",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setBurnThreshold",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setJiraOracle",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "setTaxCollectorAddress",
@@ -105,11 +105,11 @@ export interface ITaxableInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setBombOracle",
+    functionFragment: "setBurnThreshold",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setBurnThreshold",
+    functionFragment: "setJiraOracle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -184,13 +184,13 @@ export interface ITaxable extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setBombOracle(
-      _bombOracle: string,
+    setBurnThreshold(
+      _burnThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setBurnThreshold(
-      _burnThreshold: BigNumberish,
+    setJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -249,13 +249,13 @@ export interface ITaxable extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setBombOracle(
-    _bombOracle: string,
+  setBurnThreshold(
+    _burnThreshold: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setBurnThreshold(
-    _burnThreshold: BigNumberish,
+  setJiraOracle(
+    _jiraOracle: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -310,13 +310,13 @@ export interface ITaxable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    setBombOracle(
-      _bombOracle: string,
+    setBurnThreshold(
+      _burnThreshold: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setBurnThreshold(
-      _burnThreshold: BigNumberish,
+    setJiraOracle(
+      _jiraOracle: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -373,13 +373,13 @@ export interface ITaxable extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setBombOracle(
-      _bombOracle: string,
+    setBurnThreshold(
+      _burnThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setBurnThreshold(
-      _burnThreshold: BigNumberish,
+    setJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -439,13 +439,13 @@ export interface ITaxable extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setBombOracle(
-      _bombOracle: string,
+    setBurnThreshold(
+      _burnThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setBurnThreshold(
-      _burnThreshold: BigNumberish,
+    setJiraOracle(
+      _jiraOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

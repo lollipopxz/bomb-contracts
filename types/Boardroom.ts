@@ -22,18 +22,18 @@ export interface BoardroomInterface extends utils.Interface {
     "allocateSeigniorage(uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "boardroomHistory(uint256)": FunctionFragment;
-    "bomb()": FunctionFragment;
     "canClaimReward(address)": FunctionFragment;
     "canWithdraw(address)": FunctionFragment;
     "claimReward()": FunctionFragment;
     "earned(address)": FunctionFragment;
     "epoch()": FunctionFragment;
     "exit()": FunctionFragment;
-    "getBombPrice()": FunctionFragment;
+    "getJiraPrice()": FunctionFragment;
     "getLastSnapshotIndexOf(address)": FunctionFragment;
     "governanceRecoverUnsupported(address,uint256,address)": FunctionFragment;
     "initialize(address,address,address)": FunctionFragment;
     "initialized()": FunctionFragment;
+    "jira()": FunctionFragment;
     "latestSnapshotIndex()": FunctionFragment;
     "members(address)": FunctionFragment;
     "nextEpochPoint()": FunctionFragment;
@@ -59,7 +59,6 @@ export interface BoardroomInterface extends utils.Interface {
     functionFragment: "boardroomHistory",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "bomb", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "canClaimReward",
     values: [string]
@@ -73,7 +72,7 @@ export interface BoardroomInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "epoch", values?: undefined): string;
   encodeFunctionData(functionFragment: "exit", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "getBombPrice",
+    functionFragment: "getJiraPrice",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -92,6 +91,7 @@ export interface BoardroomInterface extends utils.Interface {
     functionFragment: "initialized",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "jira", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "latestSnapshotIndex",
     values?: undefined
@@ -140,7 +140,6 @@ export interface BoardroomInterface extends utils.Interface {
     functionFragment: "boardroomHistory",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "bomb", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "canClaimReward",
     data: BytesLike
@@ -157,7 +156,7 @@ export interface BoardroomInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "epoch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "exit", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getBombPrice",
+    functionFragment: "getJiraPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -173,6 +172,7 @@ export interface BoardroomInterface extends utils.Interface {
     functionFragment: "initialized",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "jira", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "latestSnapshotIndex",
     data: BytesLike
@@ -304,8 +304,6 @@ export interface Boardroom extends BaseContract {
       }
     >;
 
-    bomb(overrides?: CallOverrides): Promise<[string]>;
-
     canClaimReward(
       member: string,
       overrides?: CallOverrides
@@ -325,7 +323,7 @@ export interface Boardroom extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    getBombPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+    getJiraPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getLastSnapshotIndexOf(
       member: string,
@@ -340,13 +338,15 @@ export interface Boardroom extends BaseContract {
     ): Promise<ContractTransaction>;
 
     initialize(
-      _bomb: string,
+      _jira: string,
       _share: string,
       _treasury: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     initialized(overrides?: CallOverrides): Promise<[boolean]>;
+
+    jira(overrides?: CallOverrides): Promise<[string]>;
 
     latestSnapshotIndex(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -417,8 +417,6 @@ export interface Boardroom extends BaseContract {
     }
   >;
 
-  bomb(overrides?: CallOverrides): Promise<string>;
-
   canClaimReward(member: string, overrides?: CallOverrides): Promise<boolean>;
 
   canWithdraw(member: string, overrides?: CallOverrides): Promise<boolean>;
@@ -435,7 +433,7 @@ export interface Boardroom extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
+  getJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   getLastSnapshotIndexOf(
     member: string,
@@ -450,13 +448,15 @@ export interface Boardroom extends BaseContract {
   ): Promise<ContractTransaction>;
 
   initialize(
-    _bomb: string,
+    _jira: string,
     _share: string,
     _treasury: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   initialized(overrides?: CallOverrides): Promise<boolean>;
+
+  jira(overrides?: CallOverrides): Promise<string>;
 
   latestSnapshotIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -527,8 +527,6 @@ export interface Boardroom extends BaseContract {
       }
     >;
 
-    bomb(overrides?: CallOverrides): Promise<string>;
-
     canClaimReward(member: string, overrides?: CallOverrides): Promise<boolean>;
 
     canWithdraw(member: string, overrides?: CallOverrides): Promise<boolean>;
@@ -541,7 +539,7 @@ export interface Boardroom extends BaseContract {
 
     exit(overrides?: CallOverrides): Promise<void>;
 
-    getBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    getJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     getLastSnapshotIndexOf(
       member: string,
@@ -556,13 +554,15 @@ export interface Boardroom extends BaseContract {
     ): Promise<void>;
 
     initialize(
-      _bomb: string,
+      _jira: string,
       _share: string,
       _treasury: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     initialized(overrides?: CallOverrides): Promise<boolean>;
+
+    jira(overrides?: CallOverrides): Promise<string>;
 
     latestSnapshotIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -651,8 +651,6 @@ export interface Boardroom extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    bomb(overrides?: CallOverrides): Promise<BigNumber>;
-
     canClaimReward(
       member: string,
       overrides?: CallOverrides
@@ -672,7 +670,7 @@ export interface Boardroom extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    getBombPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    getJiraPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     getLastSnapshotIndexOf(
       member: string,
@@ -687,13 +685,15 @@ export interface Boardroom extends BaseContract {
     ): Promise<BigNumber>;
 
     initialize(
-      _bomb: string,
+      _jira: string,
       _share: string,
       _treasury: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     initialized(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jira(overrides?: CallOverrides): Promise<BigNumber>;
 
     latestSnapshotIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -753,8 +753,6 @@ export interface Boardroom extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    bomb(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     canClaimReward(
       member: string,
       overrides?: CallOverrides
@@ -780,7 +778,7 @@ export interface Boardroom extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    getBombPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getJiraPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getLastSnapshotIndexOf(
       member: string,
@@ -795,13 +793,15 @@ export interface Boardroom extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      _bomb: string,
+      _jira: string,
       _share: string,
       _treasury: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     initialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jira(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     latestSnapshotIndex(
       overrides?: CallOverrides

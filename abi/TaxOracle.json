@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_bomb",
+        "name": "_jira",
         "type": "address"
       },
       {
@@ -38,19 +38,6 @@
     ],
     "name": "OwnershipTransferred",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "bomb",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -91,7 +78,7 @@
   },
   {
     "inputs": [],
-    "name": "getBombBalance",
+    "name": "getBtcbBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -104,7 +91,7 @@
   },
   {
     "inputs": [],
-    "name": "getBtcbBalance",
+    "name": "getJiraBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -123,6 +110,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jira",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -165,11 +165,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_bomb",
+        "name": "_btcb",
         "type": "address"
       }
     ],
-    "name": "setBomb",
+    "name": "setBtcb",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -178,11 +178,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_btcb",
+        "name": "_jira",
         "type": "address"
       }
     ],
-    "name": "setBtcb",
+    "name": "setJira",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

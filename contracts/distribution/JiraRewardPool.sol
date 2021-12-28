@@ -6,9 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-// Note that this pool has no minter key of BOMB (rewards).
-// Instead, the governance will call BOMB distributeReward method and send reward to this pool at the beginning.
-contract BombGenesisRewardPool {
+// Note that this pool has no minter key of JIRA (rewards).
+// Instead, the governance will call JIRA distributeReward method and send reward to this pool at the beginning.
+contract JiraRewardPool {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -17,21 +17,20 @@ contract BombGenesisRewardPool {
 
     // Info of each user.
     struct UserInfo {
-        uint256 amount; // How many tokens the user has provided.
+        uint256 amount; // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
     }
 
     // Info of each pool.
     struct PoolInfo {
         IERC20 token; // Address of LP token contract.
-        uint256 allocPoint; // How many allocation points assigned to this pool. BOMB to distribute.
-        uint256 lastRewardTime; // Last time that BOMB distribution occurs.
-        uint256 accBombPerShare; // Accumulated BOMB per share, times 1e18. See below.
-        bool isStarted; // if lastRewardBlock has passed
+        uint256 allocPoint; // How many allocation points assigned to this pool. JIRAs to distribute in the pool.
+        uint256 lastRewardTime; // Last time that JIRAs distribution occurred.
+        uint256 accJiraPerShare; // Accumulated JIRAs per share, times 1e18. See below.
+        bool isStarted; // if lastRewardTime has passed
     }
 
-    IERC20 public bomb;
-    address public cake;
+    IERC20 public jira;
 
     // Info of each pool.
     PoolInfo[] public poolInfo;
@@ -42,51 +41,47 @@ contract BombGenesisRewardPool {
     // Total allocation points. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
 
-    // The time when BOMB mining starts.
+    // The time when JIRA mining starts.
     uint256 public poolStartTime;
 
-    // The time when BOMB mining ends.
-    uint256 public poolEndTime;
+    uint256[] public epochTotalRewards = [80000 ether, 60000 ether];
 
-    // TESTNET
-    // uint256 public bombPerSecond = 3.0555555 ether; // 11000 BOMB / (1h * 60min * 60s)
-    // uint256 public runningTime = 24 hours; // 1 hours
-    // uint256 public constant TOTAL_REWARDS = 11000 ether;
-    // END TESTNET
+    // Time when each epoch ends.
+    uint256[3] public epochEndTimes;
 
-    // MAINNET
-    uint256 public bombPerSecond = 0.11574 ether; // 10000 BOMB / (24h * 60min * 60s)
-    uint256 public runningTime = 1 days; // 1 days
-    uint256 public constant TOTAL_REWARDS = 10000 ether;
-    // END MAINNET
+    // Reward per second for each of 2 epochs (last item is equal to 0 - for sanity).
+    uint256[3] public epochJiraPerSecond;
 
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event RewardPaid(address indexed user, uint256 amount);
 
-    constructor(
-        address _bomb,
-        address _cake,
-        uint256 _poolStartTime
-    ) public {
+    constructor(address _jira, uint256 _poolStartTime) public {
         require(block.timestamp < _poolStartTime, "late");
-        if (_bomb != address(0)) bomb = IERC20(_bomb);
-        if (_cake != address(0)) cake = _cake;
+        if (_jira != address(0)) jira = IERC20(_jira);
+
         poolStartTime = _poolStartTime;
-        poolEndTime = poolStartTime + runningTime;
+
+        epochEndTimes[0] = poolStartTime + 4 days; // Day 2-5
+        epochEndTimes[1] = epochEndTimes[0] + 5 days; // Day 6-10
+
+        epochJiraPerSecond[0] = epochTotalRewards[0].div(4 days);
+        epochJiraPerSecond[1] = epochTotalRewards[1].div(5 days);
+
+        epochJiraPerSecond[2] = 0;
         operator = msg.sender;
     }
 
     modifier onlyOperator() {
-        require(operator == msg.sender, "BombGenesisPool: caller is not the operator");
+        require(operator == msg.sender, "JiraRewardPool: caller is not the operator");
         _;
     }
 
     function checkPoolDuplicate(IERC20 _token) internal view {
         uint256 length = poolInfo.length;
         for (uint256 pid = 0; pid < length; ++pid) {
-            require(poolInfo[pid].token != _token, "BombGenesisPool: existing pool?");
+            require(poolInfo[pid].token != _token, "JiraRewardPool: existing pool?");
         }
     }
 
@@ -117,13 +112,13 @@ contract BombGenesisRewardPool {
             }
         }
         bool _isStarted = (_lastRewardTime <= poolStartTime) || (_lastRewardTime <= block.timestamp);
-        poolInfo.push(PoolInfo({token: _token, allocPoint: _allocPoint, lastRewardTime: _lastRewardTime, accBombPerShare: 0, isStarted: _isStarted}));
+        poolInfo.push(PoolInfo({token: _token, allocPoint: _allocPoint, lastRewardTime: _lastRewardTime, accJiraPerShare: 0, isStarted: _isStarted}));
         if (_isStarted) {
             totalAllocPoint = totalAllocPoint.add(_allocPoint);
         }
     }
 
-    // Update the given pool's BOMB allocation point. Can only be called by the owner.
+    // Update the given pool's JIRA allocation point. Can only be called by the owner.
     function set(uint256 _pid, uint256 _allocPoint) public onlyOperator {
         massUpdatePools();
         PoolInfo storage pool = poolInfo[_pid];
@@ -133,32 +128,42 @@ contract BombGenesisRewardPool {
         pool.allocPoint = _allocPoint;
     }
 
-    // Return accumulate rewards over the given _from to _to block.
+    // Return accumulate rewards over the given _fromTime to _toTime.
     function getGeneratedReward(uint256 _fromTime, uint256 _toTime) public view returns (uint256) {
-        if (_fromTime >= _toTime) return 0;
-        if (_toTime >= poolEndTime) {
-            if (_fromTime >= poolEndTime) return 0;
-            if (_fromTime <= poolStartTime) return poolEndTime.sub(poolStartTime).mul(bombPerSecond);
-            return poolEndTime.sub(_fromTime).mul(bombPerSecond);
-        } else {
-            if (_toTime <= poolStartTime) return 0;
-            if (_fromTime <= poolStartTime) return _toTime.sub(poolStartTime).mul(bombPerSecond);
-            return _toTime.sub(_fromTime).mul(bombPerSecond);
+        for (uint8 epochId = 2; epochId >= 1; --epochId) {
+            if (_toTime >= epochEndTimes[epochId - 1]) {
+                if (_fromTime >= epochEndTimes[epochId - 1]) {
+                    return _toTime.sub(_fromTime).mul(epochJiraPerSecond[epochId]);
+                }
+
+                uint256 _generatedReward = _toTime.sub(epochEndTimes[epochId - 1]).mul(epochJiraPerSecond[epochId]);
+                if (epochId == 1) {
+                    return _generatedReward.add(epochEndTimes[0].sub(_fromTime).mul(epochJiraPerSecond[0]));
+                }
+                for (epochId = epochId - 1; epochId >= 1; --epochId) {
+                    if (_fromTime >= epochEndTimes[epochId - 1]) {
+                        return _generatedReward.add(epochEndTimes[epochId].sub(_fromTime).mul(epochJiraPerSecond[epochId]));
+                    }
+                    _generatedReward = _generatedReward.add(epochEndTimes[epochId].sub(epochEndTimes[epochId - 1]).mul(epochJiraPerSecond[epochId]));
+                }
+                return _generatedReward.add(epochEndTimes[0].sub(_fromTime).mul(epochJiraPerSecond[0]));
+            }
         }
+        return _toTime.sub(_fromTime).mul(epochJiraPerSecond[0]);
     }
 
-    // View function to see pending BOMB on frontend.
-    function pendingBOMB(uint256 _pid, address _user) external view returns (uint256) {
+    // View function to see pending JIRAs on frontend.
+    function pendingJIRA(uint256 _pid, address _user) external view returns (uint256) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][_user];
-        uint256 accBombPerShare = pool.accBombPerShare;
+        uint256 accJiraPerShare = pool.accJiraPerShare;
         uint256 tokenSupply = pool.token.balanceOf(address(this));
         if (block.timestamp > pool.lastRewardTime && tokenSupply != 0) {
             uint256 _generatedReward = getGeneratedReward(pool.lastRewardTime, block.timestamp);
-            uint256 _bombReward = _generatedReward.mul(pool.allocPoint).div(totalAllocPoint);
-            accBombPerShare = accBombPerShare.add(_bombReward.mul(1e18).div(tokenSupply));
+            uint256 _jiraReward = _generatedReward.mul(pool.allocPoint).div(totalAllocPoint);
+            accJiraPerShare = accJiraPerShare.add(_jiraReward.mul(1e18).div(tokenSupply));
         }
-        return user.amount.mul(accBombPerShare).div(1e18).sub(user.rewardDebt);
+        return user.amount.mul(accJiraPerShare).div(1e18).sub(user.rewardDebt);
     }
 
     // Update reward variables for all pools. Be careful of gas spending!
@@ -186,8 +191,8 @@ contract BombGenesisRewardPool {
         }
         if (totalAllocPoint > 0) {
             uint256 _generatedReward = getGeneratedReward(pool.lastRewardTime, block.timestamp);
-            uint256 _bombReward = _generatedReward.mul(pool.allocPoint).div(totalAllocPoint);
-            pool.accBombPerShare = pool.accBombPerShare.add(_bombReward.mul(1e18).div(tokenSupply));
+            uint256 _jiraReward = _generatedReward.mul(pool.allocPoint).div(totalAllocPoint);
+            pool.accJiraPerShare = pool.accJiraPerShare.add(_jiraReward.mul(1e18).div(tokenSupply));
         }
         pool.lastRewardTime = block.timestamp;
     }
@@ -199,21 +204,17 @@ contract BombGenesisRewardPool {
         UserInfo storage user = userInfo[_pid][_sender];
         updatePool(_pid);
         if (user.amount > 0) {
-            uint256 _pending = user.amount.mul(pool.accBombPerShare).div(1e18).sub(user.rewardDebt);
+            uint256 _pending = user.amount.mul(pool.accJiraPerShare).div(1e18).sub(user.rewardDebt);
             if (_pending > 0) {
-                safeBombTransfer(_sender, _pending);
+                safeJiraTransfer(_sender, _pending);
                 emit RewardPaid(_sender, _pending);
             }
         }
         if (_amount > 0) {
             pool.token.safeTransferFrom(_sender, address(this), _amount);
-            if (address(pool.token) == cake) {
-                user.amount = user.amount.add(_amount.mul(9900).div(10000));
-            } else {
-                user.amount = user.amount.add(_amount);
-            }
+            user.amount = user.amount.add(_amount);
         }
-        user.rewardDebt = user.amount.mul(pool.accBombPerShare).div(1e18);
+        user.rewardDebt = user.amount.mul(pool.accJiraPerShare).div(1e18);
         emit Deposit(_sender, _pid, _amount);
     }
 
@@ -224,16 +225,16 @@ contract BombGenesisRewardPool {
         UserInfo storage user = userInfo[_pid][_sender];
         require(user.amount >= _amount, "withdraw: not good");
         updatePool(_pid);
-        uint256 _pending = user.amount.mul(pool.accBombPerShare).div(1e18).sub(user.rewardDebt);
+        uint256 _pending = user.amount.mul(pool.accJiraPerShare).div(1e18).sub(user.rewardDebt);
         if (_pending > 0) {
-            safeBombTransfer(_sender, _pending);
+            safeJiraTransfer(_sender, _pending);
             emit RewardPaid(_sender, _pending);
         }
         if (_amount > 0) {
             user.amount = user.amount.sub(_amount);
             pool.token.safeTransfer(_sender, _amount);
         }
-        user.rewardDebt = user.amount.mul(pool.accBombPerShare).div(1e18);
+        user.rewardDebt = user.amount.mul(pool.accJiraPerShare).div(1e18);
         emit Withdraw(_sender, _pid, _amount);
     }
 
@@ -248,14 +249,14 @@ contract BombGenesisRewardPool {
         emit EmergencyWithdraw(msg.sender, _pid, _amount);
     }
 
-    // Safe BOMB transfer function, just in case if rounding error causes pool to not have enough BOMBs.
-    function safeBombTransfer(address _to, uint256 _amount) internal {
-        uint256 _bombBalance = bomb.balanceOf(address(this));
-        if (_bombBalance > 0) {
-            if (_amount > _bombBalance) {
-                bomb.safeTransfer(_to, _bombBalance);
+    // Safe jira transfer function, just in case if rounding error causes pool to not have enough JIRAs.
+    function safeJiraTransfer(address _to, uint256 _amount) internal {
+        uint256 _jiraBal = jira.balanceOf(address(this));
+        if (_jiraBal > 0) {
+            if (_amount > _jiraBal) {
+                jira.safeTransfer(_to, _jiraBal);
             } else {
-                bomb.safeTransfer(_to, _amount);
+                jira.safeTransfer(_to, _amount);
             }
         }
     }
@@ -269,13 +270,13 @@ contract BombGenesisRewardPool {
         uint256 amount,
         address to
     ) external onlyOperator {
-        if (block.timestamp < poolEndTime + 90 days) {
-            // do not allow to drain core token (BOMB or lps) if less than 90 days after pool ends
-            require(_token != bomb, "bomb");
+        if (block.timestamp < epochEndTimes[1] + 30 days) {
+            // do not allow to drain token if less than 30 days after farming
+            require(_token != jira, "!jira");
             uint256 length = poolInfo.length;
             for (uint256 pid = 0; pid < length; ++pid) {
                 PoolInfo storage pool = poolInfo[pid];
-                require(_token != pool.token, "pool.token");
+                require(_token != pool.token, "!pool.token");
             }
         }
         _token.safeTransfer(to, amount);
