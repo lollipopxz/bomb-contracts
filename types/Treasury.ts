@@ -21,7 +21,6 @@ export interface TreasuryInterface extends utils.Interface {
   functions: {
     "PERIOD()": FunctionFragment;
     "allocateSeigniorage()": FunctionFragment;
-    "bbond()": FunctionFragment;
     "boardroom()": FunctionFragment;
     "boardroomAllocateSeigniorage(uint256)": FunctionFragment;
     "boardroomGovernanceRecoverUnsupported(address,uint256,address)": FunctionFragment;
@@ -30,7 +29,6 @@ export interface TreasuryInterface extends utils.Interface {
     "bondDepletionFloorPercent()": FunctionFragment;
     "bootstrapEpochs()": FunctionFragment;
     "bootstrapSupplyExpansionPercent()": FunctionFragment;
-    "bshare()": FunctionFragment;
     "buyBonds(uint256,uint256)": FunctionFragment;
     "daoFund()": FunctionFragment;
     "daoFundSharedPercent()": FunctionFragment;
@@ -52,10 +50,12 @@ export interface TreasuryInterface extends utils.Interface {
     "initialize(address,address,address,address,address,uint256)": FunctionFragment;
     "initialized()": FunctionFragment;
     "isInitialized()": FunctionFragment;
+    "jbond()": FunctionFragment;
     "jira()": FunctionFragment;
     "jiraOracle()": FunctionFragment;
     "jiraPriceCeiling()": FunctionFragment;
     "jiraPriceOne()": FunctionFragment;
+    "jshare()": FunctionFragment;
     "maxDebtRatioPercent()": FunctionFragment;
     "maxDiscountRate()": FunctionFragment;
     "maxExpansionTiers(uint256)": FunctionFragment;
@@ -98,7 +98,6 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "allocateSeigniorage",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "bbond", values?: undefined): string;
   encodeFunctionData(functionFragment: "boardroom", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "boardroomAllocateSeigniorage",
@@ -128,7 +127,6 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "bootstrapSupplyExpansionPercent",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "bshare", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "buyBonds",
     values: [BigNumberish, BigNumberish]
@@ -204,6 +202,7 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "isInitialized",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "jbond", values?: undefined): string;
   encodeFunctionData(functionFragment: "jira", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "jiraOracle",
@@ -217,6 +216,7 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "jiraPriceOne",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "jshare", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "maxDebtRatioPercent",
     values?: undefined
@@ -354,7 +354,6 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "allocateSeigniorage",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "bbond", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "boardroom", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "boardroomAllocateSeigniorage",
@@ -384,7 +383,6 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "bootstrapSupplyExpansionPercent",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "bshare", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "buyBonds", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "daoFund", data: BytesLike): Result;
   decodeFunctionResult(
@@ -451,6 +449,7 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "isInitialized",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "jbond", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "jira", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "jiraOracle", data: BytesLike): Result;
   decodeFunctionResult(
@@ -461,6 +460,7 @@ export interface TreasuryInterface extends utils.Interface {
     functionFragment: "jiraPriceOne",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "jshare", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "maxDebtRatioPercent",
     data: BytesLike
@@ -706,8 +706,6 @@ export interface Treasury extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    bbond(overrides?: CallOverrides): Promise<[string]>;
-
     boardroom(overrides?: CallOverrides): Promise<[string]>;
 
     boardroomAllocateSeigniorage(
@@ -740,8 +738,6 @@ export interface Treasury extends BaseContract {
     bootstrapSupplyExpansionPercent(
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
-
-    bshare(overrides?: CallOverrides): Promise<[string]>;
 
     buyBonds(
       _jiraAmount: BigNumberish,
@@ -805,8 +801,8 @@ export interface Treasury extends BaseContract {
 
     initialize(
       _jira: string,
-      _bbond: string,
-      _bshare: string,
+      _jbond: string,
+      _jshare: string,
       _jiraOracle: string,
       _boardroom: string,
       _startTime: BigNumberish,
@@ -817,6 +813,8 @@ export interface Treasury extends BaseContract {
 
     isInitialized(overrides?: CallOverrides): Promise<[boolean]>;
 
+    jbond(overrides?: CallOverrides): Promise<[string]>;
+
     jira(overrides?: CallOverrides): Promise<[string]>;
 
     jiraOracle(overrides?: CallOverrides): Promise<[string]>;
@@ -824,6 +822,8 @@ export interface Treasury extends BaseContract {
     jiraPriceCeiling(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     jiraPriceOne(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    jshare(overrides?: CallOverrides): Promise<[string]>;
 
     maxDebtRatioPercent(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -976,8 +976,6 @@ export interface Treasury extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  bbond(overrides?: CallOverrides): Promise<string>;
-
   boardroom(overrides?: CallOverrides): Promise<string>;
 
   boardroomAllocateSeigniorage(
@@ -1010,8 +1008,6 @@ export interface Treasury extends BaseContract {
   bootstrapSupplyExpansionPercent(
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  bshare(overrides?: CallOverrides): Promise<string>;
 
   buyBonds(
     _jiraAmount: BigNumberish,
@@ -1063,8 +1059,8 @@ export interface Treasury extends BaseContract {
 
   initialize(
     _jira: string,
-    _bbond: string,
-    _bshare: string,
+    _jbond: string,
+    _jshare: string,
     _jiraOracle: string,
     _boardroom: string,
     _startTime: BigNumberish,
@@ -1075,6 +1071,8 @@ export interface Treasury extends BaseContract {
 
   isInitialized(overrides?: CallOverrides): Promise<boolean>;
 
+  jbond(overrides?: CallOverrides): Promise<string>;
+
   jira(overrides?: CallOverrides): Promise<string>;
 
   jiraOracle(overrides?: CallOverrides): Promise<string>;
@@ -1082,6 +1080,8 @@ export interface Treasury extends BaseContract {
   jiraPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
 
   jiraPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
+
+  jshare(overrides?: CallOverrides): Promise<string>;
 
   maxDebtRatioPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1230,8 +1230,6 @@ export interface Treasury extends BaseContract {
 
     allocateSeigniorage(overrides?: CallOverrides): Promise<void>;
 
-    bbond(overrides?: CallOverrides): Promise<string>;
-
     boardroom(overrides?: CallOverrides): Promise<string>;
 
     boardroomAllocateSeigniorage(
@@ -1264,8 +1262,6 @@ export interface Treasury extends BaseContract {
     bootstrapSupplyExpansionPercent(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    bshare(overrides?: CallOverrides): Promise<string>;
 
     buyBonds(
       _jiraAmount: BigNumberish,
@@ -1317,8 +1313,8 @@ export interface Treasury extends BaseContract {
 
     initialize(
       _jira: string,
-      _bbond: string,
-      _bshare: string,
+      _jbond: string,
+      _jshare: string,
       _jiraOracle: string,
       _boardroom: string,
       _startTime: BigNumberish,
@@ -1329,6 +1325,8 @@ export interface Treasury extends BaseContract {
 
     isInitialized(overrides?: CallOverrides): Promise<boolean>;
 
+    jbond(overrides?: CallOverrides): Promise<string>;
+
     jira(overrides?: CallOverrides): Promise<string>;
 
     jiraOracle(overrides?: CallOverrides): Promise<string>;
@@ -1336,6 +1334,8 @@ export interface Treasury extends BaseContract {
     jiraPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
 
     jiraPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jshare(overrides?: CallOverrides): Promise<string>;
 
     maxDebtRatioPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1556,8 +1556,6 @@ export interface Treasury extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    bbond(overrides?: CallOverrides): Promise<BigNumber>;
-
     boardroom(overrides?: CallOverrides): Promise<BigNumber>;
 
     boardroomAllocateSeigniorage(
@@ -1590,8 +1588,6 @@ export interface Treasury extends BaseContract {
     bootstrapSupplyExpansionPercent(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    bshare(overrides?: CallOverrides): Promise<BigNumber>;
 
     buyBonds(
       _jiraAmount: BigNumberish,
@@ -1643,8 +1639,8 @@ export interface Treasury extends BaseContract {
 
     initialize(
       _jira: string,
-      _bbond: string,
-      _bshare: string,
+      _jbond: string,
+      _jshare: string,
       _jiraOracle: string,
       _boardroom: string,
       _startTime: BigNumberish,
@@ -1655,6 +1651,8 @@ export interface Treasury extends BaseContract {
 
     isInitialized(overrides?: CallOverrides): Promise<BigNumber>;
 
+    jbond(overrides?: CallOverrides): Promise<BigNumber>;
+
     jira(overrides?: CallOverrides): Promise<BigNumber>;
 
     jiraOracle(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1662,6 +1660,8 @@ export interface Treasury extends BaseContract {
     jiraPriceCeiling(overrides?: CallOverrides): Promise<BigNumber>;
 
     jiraPriceOne(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jshare(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxDebtRatioPercent(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1813,8 +1813,6 @@ export interface Treasury extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    bbond(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     boardroom(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     boardroomAllocateSeigniorage(
@@ -1849,8 +1847,6 @@ export interface Treasury extends BaseContract {
     bootstrapSupplyExpansionPercent(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    bshare(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     buyBonds(
       _jiraAmount: BigNumberish,
@@ -1920,8 +1916,8 @@ export interface Treasury extends BaseContract {
 
     initialize(
       _jira: string,
-      _bbond: string,
-      _bshare: string,
+      _jbond: string,
+      _jshare: string,
       _jiraOracle: string,
       _boardroom: string,
       _startTime: BigNumberish,
@@ -1932,6 +1928,8 @@ export interface Treasury extends BaseContract {
 
     isInitialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    jbond(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     jira(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     jiraOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1939,6 +1937,8 @@ export interface Treasury extends BaseContract {
     jiraPriceCeiling(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     jiraPriceOne(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jshare(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     maxDebtRatioPercent(
       overrides?: CallOverrides

@@ -11,7 +11,7 @@ module.exports = async function ({
 
     await deploy("JiraGenesisRewardPool", {
         from: deployer,
-        args: [jira.address, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82", 1637449200],
+        args: [jira.address, "0x0dE8FCAE8421fc79B29adE9ffF97854a424Cad09", 1640810148],
         log: true,
         deterministicDeployment: false,
     });

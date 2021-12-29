@@ -58,8 +58,8 @@ contract Treasury is ContractGuard {
 
     // core components
     address public jira;
-    address public bbond;
-    address public bshare;
+    address public jbond;
+    address public jshare;
 
     address public boardroom;
     address public jiraOracle;
@@ -134,8 +134,8 @@ contract Treasury is ContractGuard {
     modifier checkOperator() {
         require(
             IBasisAsset(jira).operator() == address(this) &&
-                IBasisAsset(bbond).operator() == address(this) &&
-                IBasisAsset(bshare).operator() == address(this) &&
+                IBasisAsset(jbond).operator() == address(this) &&
+                IBasisAsset(jshare).operator() == address(this) &&
                 Operator(boardroom).operator() == address(this),
             "Treasury: need more permission"
         );
@@ -187,7 +187,7 @@ contract Treasury is ContractGuard {
         if (_jiraPrice <= jiraPriceOne) {
             uint256 _jiraSupply = getJiraCirculatingSupply();
             uint256 _bondMaxSupply = _jiraSupply.mul(maxDebtRatioPercent).div(10000);
-            uint256 _bondSupply = IERC20(bbond).totalSupply();
+            uint256 _bondSupply = IERC20(jbond).totalSupply();
             if (_bondMaxSupply > _bondSupply) {
                 uint256 _maxMintableBond = _bondMaxSupply.sub(_bondSupply);
                 uint256 _maxBurnableJira = _maxMintableBond.mul(_jiraPrice).div(1e14);
@@ -246,15 +246,15 @@ contract Treasury is ContractGuard {
 
     function initialize(
         address _jira,
-        address _bbond,
-        address _bshare,
+        address _jbond,
+        address _jshare,
         address _jiraOracle,
         address _boardroom,
         uint256 _startTime
     ) public notInitialized {
         jira = _jira;
-        bbond = _bbond;
-        bshare = _bshare;
+        jbond = _jbond;
+        jshare = _jshare;
         jiraOracle = _jiraOracle;
         boardroom = _boardroom;
         startTime = _startTime;
@@ -431,11 +431,11 @@ contract Treasury is ContractGuard {
 
         uint256 _bondAmount = _jiraAmount.mul(_rate).div(1e14);
         uint256 jiraSupply = getJiraCirculatingSupply();
-        uint256 newBondSupply = IERC20(bbond).totalSupply().add(_bondAmount);
+        uint256 newBondSupply = IERC20(jbond).totalSupply().add(_bondAmount);
         require(newBondSupply <= jiraSupply.mul(maxDebtRatioPercent).div(10000), "over max debt ratio");
 
         IBasisAsset(jira).burnFrom(msg.sender, _jiraAmount);
-        IBasisAsset(bbond).mint(msg.sender, _bondAmount);
+        IBasisAsset(jbond).mint(msg.sender, _bondAmount);
 
         epochSupplyContractionLeft = epochSupplyContractionLeft.sub(_jiraAmount);
         _updateJiraPrice();
@@ -461,7 +461,7 @@ contract Treasury is ContractGuard {
 
         seigniorageSaved = seigniorageSaved.sub(Math.min(seigniorageSaved, _jiraAmount));
 
-        IBasisAsset(bbond).burnFrom(msg.sender, _bondAmount);
+        IBasisAsset(jbond).burnFrom(msg.sender, _bondAmount);
         IERC20(jira).safeTransfer(msg.sender, _jiraAmount);
 
         _updateJiraPrice();
@@ -514,7 +514,7 @@ contract Treasury is ContractGuard {
         } else {
             if (previousEpochJiraPrice > jiraPriceCeiling) {
                 // Expansion ($JIRA Price > 1 $ETH): there is some seigniorage to be allocated
-                uint256 bondSupply = IERC20(bbond).totalSupply();
+                uint256 bondSupply = IERC20(jbond).totalSupply();
                 uint256 _percentage = previousEpochJiraPrice.sub(jiraPriceOne);
                 uint256 _savedForBond;
                 uint256 _savedForBoardroom;
@@ -553,8 +553,8 @@ contract Treasury is ContractGuard {
     ) external onlyOperator {
         // do not allow to drain core tokens
         require(address(_token) != address(jira), "jira");
-        require(address(_token) != address(bbond), "bond");
-        require(address(_token) != address(bshare), "share");
+        require(address(_token) != address(jbond), "bond");
+        require(address(_token) != address(jshare), "share");
         _token.safeTransfer(_to, _amount);
     }
 
